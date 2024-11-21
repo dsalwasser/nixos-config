@@ -206,9 +206,14 @@
       tamasfe.even-better-toml
 
       # The C/C++ extension pack consists of the following extensions.
-      ms-vscode.cmake-tools
       twxs.cmake
       llvm-vs-code-extensions.vscode-clangd
+      vadimcn.vscode-lldb
+
+      # Extension Pack for Java
+      vscjava.vscode-java-pack
+      visualstudioexptteam.vscodeintellicode
+      redhat.java
     ];
 
     keybindings = [
