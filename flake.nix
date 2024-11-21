@@ -1,5 +1,5 @@
 {
-  description = "My NixOS and Home Manager configuration";
+  description = "My NixOS and Home Manager configuration.";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
@@ -16,10 +16,15 @@
       inputs.home-manager.follows = "home-manager";
     };
 
+    spicetify = {
+      url = "github:Gerg-L/spicetify-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     zjstatus.url = "github:dj95/zjstatus";
   };
 
-  outputs = { nixpkgs, home-manager, plasma-manager, ... }@inputs: {
+  outputs = { nixpkgs, home-manager, plasma-manager, spicetify, ... }@inputs: {
     nixosConfigurations = {
       nixos = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
@@ -29,7 +34,10 @@
           home-manager.nixosModules.home-manager
           {
             home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.sharedModules = [ plasma-manager.homeManagerModules.plasma-manager ];
+            home-manager.sharedModules = [
+              plasma-manager.homeManagerModules.plasma-manager
+              spicetify.homeManagerModules.default
+            ];
             home-manager.useGlobalPkgs = false;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";

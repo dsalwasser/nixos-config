@@ -35,6 +35,7 @@
 
         additions = {
           fonts = import ./packages/apple-fonts.nix final.pkgs;
+          spotify-adblock = import ./packages/spotify-adblock.nix final.unstable;
           zjstatus = inputs.zjstatus.packages.${prev.system}.default;
         };
       })
@@ -98,6 +99,7 @@
     # Desktop applications
     bitwarden
     discord
+    easyeffects
     inkscape
     obsidian
     pympress
@@ -257,6 +259,23 @@
       };
     };
   };
+
+  programs.spicetify =
+    let
+      spicePkgs = inputs.spicetify.legacyPackages.${pkgs.system};
+    in
+    {
+      enable = true;
+      spotifyPackage = pkgs.additions.spotify-adblock;
+      enabledExtensions = with spicePkgs.extensions; [
+        adblock
+        autoSkipVideo
+        loopyLoop
+        hidePodcasts
+        shuffle
+      ];
+      theme = spicePkgs.themes.comfy;
+    };
 
   programs = {
     bottom = {
