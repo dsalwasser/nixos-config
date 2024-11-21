@@ -81,6 +81,7 @@
     bartib
     neofetch
     nvtopPackages.full
+    rclone
     restic
     unzip
 
