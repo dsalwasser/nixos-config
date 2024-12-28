@@ -34,7 +34,7 @@
         };
 
         additions = {
-          fonts = import ./packages/apple-fonts.nix final.pkgs;
+          fonts = import ./packages/apple-fonts.nix final.unstable;
           spotify-adblock = import ./packages/spotify-adblock.nix final.unstable;
           zjstatus = inputs.zjstatus.packages.${prev.system}.default;
         };
@@ -89,7 +89,7 @@
     # Language servers for various languages
     bash-language-server
     cmake-language-server
-    clang-tools_18
+    clang-tools
     dockerfile-language-server-nodejs
     marksman
     nil
@@ -267,6 +267,7 @@
     in
     {
       enable = true;
+      spicetifyPackage = pkgs.unstable.spicetify-cli;
       spotifyPackage = pkgs.additions.spotify-adblock;
       enabledExtensions = with spicePkgs.extensions; [
         adblock
