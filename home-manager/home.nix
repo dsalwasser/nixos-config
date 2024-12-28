@@ -117,7 +117,8 @@
     fonts.sf-pro
     zjstatus
   ]) ++ (with pkgs; [
-    # Fetch packages from stable repository to avoid incompatible Qt library.
+    # Fetch packages from stable repository to avoid incompatible Mesa/Qt library.
+    google-chrome
     kdePackages.sddm-kcm
     ipe
   ]);
