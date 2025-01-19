@@ -61,30 +61,31 @@
     shell = pkgs.fish;
   };
 
-  # Enable CUPS to print documents and detect printers which support the IPP
-  # Everywhere protocol.
   services = {
+    # Enable CUPS to print documents
     printing.enable = true;
 
-    # Run the Avahi daemon, enable the mDNS NSS plug-in and open the firewall for
-    # UDP port 5353.
+    # Run the Avahi daemon to detect printers which support the IPP
+    # Everywhere protocol.
     avahi = {
       enable = true;
       nssmdns4 = true;
       openFirewall = true;
     };
-  };
 
-  # Enable audio via PipeWire.
-  services.pipewire = {
-    enable = true;
-    alsa = {
+    # Enable audio via PipeWire.
+    pipewire = {
       enable = true;
-      support32Bit = true;
+      alsa = {
+        enable = true;
+        support32Bit = true;
+      };
+
+      # Enable PulseAudio server emulation.
+      pulse.enable = true;
     };
 
-    # Enable PulseAudio server emulation.
-    pulse.enable = true;
+    cloudflare-warp.enable = true;
   };
 
   # Enable the RealtimeKit system service. The PipeWire and PulseAudio server
