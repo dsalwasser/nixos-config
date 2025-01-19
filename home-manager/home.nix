@@ -80,6 +80,7 @@
   home.packages = with pkgs.unstable; [
     # Command-line Tools
     bartib
+    cloudflare-warp
     neofetch
     nvtopPackages.full
     rclone
@@ -101,8 +102,10 @@
     discord
     easyeffects
     inkscape
+    mpv
     obsidian
     pympress
+    streamlink-twitch-gui-bin
     thunderbird
     tor-browser
 
@@ -118,6 +121,7 @@
     zjstatus
   ]) ++ (with pkgs; [
     # Fetch packages from stable repository to avoid incompatible Mesa/Qt library.
+    freetube
     google-chrome
     kdePackages.sddm-kcm
     ipe
@@ -192,6 +196,9 @@
       ms-ceintl.vscode-language-pack-de
       ms-vscode-remote.remote-ssh
 
+      github.copilot
+      github.copilot-chat
+
       usernamehw.errorlens
 
       valentjn.vscode-ltex
@@ -245,7 +252,8 @@
       "telemetry.telemetryLevel" = "off";
       "window.zoomLevel" = 0.8;
       "workbench.startupEditor" = "none";
-      "latex-workshop.latexindent.args" = [
+      "latex-workshop.formatting.latex" = "latexindent";
+      "latex-workshop.formatting.latexindent.args" = [
         "-c"
         "%DIR%/"
         "%TMPFILE%"
