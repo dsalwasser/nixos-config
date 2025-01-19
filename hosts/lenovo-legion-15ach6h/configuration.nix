@@ -15,16 +15,14 @@
   services.fstrim.enable = true;
 
   # Set TLP as the power management tool.
-  services.power-profiles-daemon.enable = false;
-  services.tlp.enable = true;
+  services.power-profiles-daemon.enable = true;
 
   # Load video drivers for Xorg and Wayland.
   services.xserver.videoDrivers = [ "amdgpu" "nvidia" "modesetting" ];
 
-  hardware.opengl = {
+  hardware.graphics = {
+    # Enable OpenGL.
     enable = true;
-    driSupport = true;
-    driSupport32Bit = true;
 
     # Enabe accelerated video playback.
     extraPackages = [ pkgs.vaapiVdpau ];
