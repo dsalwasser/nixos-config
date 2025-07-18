@@ -2,11 +2,15 @@
   description = "My NixOS and Home Manager configuration.";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -21,20 +25,25 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    zjstatus.url = "github:dj95/zjstatus";
+    zjstatus = {
+      url = "github:dj95/zjstatus";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { nixpkgs, home-manager, plasma-manager, spicetify, ... }@inputs: {
-    nixosConfigurations = {
-      nixos = nixpkgs.lib.nixosSystem {
+  outputs = { nixpkgs, home-manager, nix-index-database, plasma-manager, spicetify, ... }@inputs:
+    let
+      nixos-system = host-config: nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
+
         modules = [
           ./nixos/configuration.nix
-          ./hosts/lenovo-legion-15ach6h/configuration.nix
+          host-config
           home-manager.nixosModules.home-manager
           {
             home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.sharedModules = [
+              nix-index-database.homeModules.nix-index
               plasma-manager.homeManagerModules.plasma-manager
               spicetify.homeManagerModules.default
             ];
@@ -45,6 +54,12 @@
           }
         ];
       };
+    in
+    {
+      nixosConfigurations = {
+        lenovo = nixos-system ./hosts/lenovo-legion-15ach6h/configuration.nix;
+        kvm = nixos-system ./hosts/kvm/configuration.nix;
+        virtual-box = nixos-system ./hosts/virtual-box/configuration.nix;
+      };
     };
-  };
 }

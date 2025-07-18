@@ -1,67 +1,69 @@
-# This is the configuration file for the Lenovo Legion 15ACH6H host.
-
-{ pkgs, ... }: {
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  # networking.useDHCP = true;
-
-  #networking.interfaces.docker0.useDHCP = true;
+{ config, pkgs, ... }: {
   networking.interfaces.eno1.useDHCP = true;
   networking.interfaces.wlp4s0.useDHCP = true;
 
-  # Enable periodic SSD TRIM of mounted partitions in background.
-  services.fstrim.enable = true;
+  services = {
+    # Enable periodic SSD TRIM of mounted partitions in background.
+    fstrim.enable = true;
 
-  # Set TLP as the power management tool.
-  services.power-profiles-daemon.enable = true;
+    # Set TLP as the power management tool.
+    power-profiles-daemon.enable = true;
 
-  # Load video drivers for Xorg and Wayland.
-  services.xserver.videoDrivers = [ "amdgpu" "nvidia" "modesetting" ];
-
-  hardware.graphics = {
-    # Enable OpenGL.
-    enable = true;
-
-    # Enabe accelerated video playback.
-    extraPackages = [ pkgs.vaapiVdpau ];
+    # Load video drivers for Xorg and Wayland.
+    xserver.videoDrivers = [ "amdgpu" "nvidia" "modesetting" ];
   };
 
-  hardware.nvidia = {
-    # Modesetting is needed for most Wayland compositors.
-    modesetting.enable = true;
+  hardware = {
+    # Enable all the firmware regardless of license.
+    enableAllFirmware = true;
 
-    # Use the NVIDIA open source kernel module (not to be confused with the
-    # independent third-party "nouveau" open source driver).
-    open = true;
+    # Update the CPU microcode for AMD processors.
+    cpu.amd.updateMicrocode = true;
 
-    # Enable NVIDIA Optimus PRIME in offload mode.
-    prime = {
-      amdgpuBusId = "PCI:6:0:0";
-      nvidiaBusId = "PCI:1:0:0";
+    graphics = {
+      # Enable OpenGL.
+      enable = true;
 
-      offload = {
-        enable = true;
+      # Enabe accelerated video playback.
+      extraPackages = [ pkgs.vaapiVdpau ];
+    };
 
-        # Provides `nvidia-offload` command.
-        enableOffloadCmd = true;
+    nvidia = {
+      package = config.boot.kernelPackages.nvidiaPackages.beta;
+
+      modesetting.enable = true;
+      powerManagement.enable = true;
+
+      # Do not use the NVIDIA open source kernel module (not to be confused with
+      # the independent third-party "nouveau" open source driver) as it has not
+      # good support for sleep and hibernate.
+      open = false;
+
+      prime = {
+        nvidiaBusId = "PCI:1:0:0";
+        amdgpuBusId = "PCI:6:0:0";
+
+        offload = {
+          enable = true;
+
+          # Provides `nvidia-offload` command.
+          enableOffloadCmd = true;
+        };
       };
     };
   };
 
-  # Enables hardware framebuffer support, which is required to somewhat
-  # consistently resume from suspend-to-ram.
-  boot.kernelParams = [ "nvidia_drm.fbdev=1" ];
+  boot = {
+    # Use the latest kernel.
+    kernelPackages = pkgs.linuxPackages_latest;
 
-  # Update the CPU microcode for AMD processors.
-  hardware.cpu.amd.updateMicrocode = true;
+    # Enables the amd cpu scaling and hardware framebuffer support, which is
+    # required to somewhat consistently resume from suspend-to-ram.
+    kernelParams = [ "amd_pstate=active" "nvidia_drm.fbdev=1" ];
 
-  # Enable all the firmware regardless of license.
-  hardware.enableAllFirmware = true;
-
-  boot.initrd.availableKernelModules = [ "ahci" "nvme" "usbhid" "xhci_pci" ];
-  boot.kernelModules = [ "amdgpu" "amd_pstate=active" "kvm-amd" "nvidia" ];
+    kernelModules = [ "amdgpu" "kvm-amd" "nvidia" ];
+    initrd.availableKernelModules = [ "ahci" "nvme" "usbhid" "xhci_pci" ];
+  };
 
   nixpkgs.hostPlatform = "x86_64-linux";
 }

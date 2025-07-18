@@ -1,36 +1,38 @@
-# This is the system's configuration file and is used to configure the system
-# environment (it replaces /etc/nixos/configuration.nix)
-
 { config, inputs, lib, pkgs, ... }: {
+  nix =
+    let
+      flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
+    in
+    {
+      settings = {
+        # Enable flakes and new 'nix' command.
+        experimental-features = "nix-command flakes";
+
+        # Deduplicate and optimize nix store.
+        auto-optimise-store = true;
+
+        # Workaround for https://github.com/NixOS/nix/issues/9574.
+        nix-path = config.nix.nixPath;
+      };
+
+      # This will add each flake input as a registry to make nix3 commands
+      # consistent with your flake.
+      registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
+
+      # This will additionally add your inputs to the system's legacy channels.
+      # Making legacy nix commands consistent as well!
+      nixPath = lib.mapAttrsToList (key: value: "${key}=flake:${key}") flakeInputs;
+    };
+
+  nixpkgs.config.allowUnfree = true;
+
   imports = [
     ./file-systems.nix
     ./kde-plasma.nix
+    ./networking.nix
   ];
 
-  # Allow unfree packages.
-  nixpkgs.config.allowUnfree = true;
-
-  nix = {
-    # This will add each flake input as a registry to make nix3 commands
-    # consistent with your flake.
-    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
-
-    # This will additionally add your inputs to the system's legacy channels.
-    # Making legacy nix commands consistent as well, awesome!
-    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
-
-    settings = {
-      # Enable flakes and new 'nix' command.
-      experimental-features = "nix-command flakes";
-      # Deduplicate and optimize nix store.
-      auto-optimise-store = true;
-    };
-  };
-
-  networking = {
-    hostName = "nixos";
-    networkmanager.enable = true;
-  };
+  networking.hostName = "nixos";
 
   time = {
     timeZone = "Europe/Berlin";
@@ -40,29 +42,22 @@
     hardwareClockInLocalTime = true;
   };
 
-  # Set the default locale and configure the virtual console keymap from the
-  # xserver keyboard settings.
   i18n.defaultLocale = "de_DE.UTF-8";
-  console.useXkbConfig = true;
-
-  # Enable xdg desktop integration for securely accessing resources from
-  # outside an application.
-  xdg.portal.enable = true;
-
-  # Start the OpenSSH agent on login.
-  programs.ssh.startAgent = true;
-
-  # Enable the fish shell.
-  programs.fish.enable = true;
+  console.keyMap = "de";
 
   users.users.sali = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "sound" "docker" ];
+    extraGroups = [ "wheel" "networkmanager" "sound" "docker" "podman" "libvirtd" ];
     shell = pkgs.fish;
   };
 
+  programs = {
+    fish.enable = true;
+    nix-ld.enable = true;
+    ssh.startAgent = true;
+  };
+
   services = {
-    # Enable CUPS to print documents
     printing.enable = true;
 
     # Run the Avahi daemon to detect printers which support the IPP
@@ -76,6 +71,7 @@
     # Enable audio via PipeWire.
     pipewire = {
       enable = true;
+
       alsa = {
         enable = true;
         support32Bit = true;
@@ -84,28 +80,63 @@
       # Enable PulseAudio server emulation.
       pulse.enable = true;
     };
-
-    cloudflare-warp.enable = true;
   };
 
   # Enable the RealtimeKit system service. The PipeWire and PulseAudio server
   # uses this to acquire realtime priority.
   security.rtkit.enable = true;
 
-  # Enable docker.
-  virtualisation.docker.enable = true;
+  security.lsm = lib.mkForce [ ];
 
-  # Enable support for bluetooth.
-  hardware.bluetooth.enable = true;
+  virtualisation = {
+    containers.enable = true;
 
-  # Use the systemd-boot EFI boot loader.
-  boot.loader = {
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
+    docker = {
+      enable = true;
+      storageDriver = "btrfs";
+
+      rootless = {
+        enable = true;
+        setSocketVariable = true;
+      };
+    };
+
+    podman = {
+      enable = true;
+
+      # Required for containers under podman-compose to be able to talk to each other.
+      defaultNetwork.settings.dns_enabled = true;
+    };
+
+    # Enable libvirt, a tool for managing platform virtualization
+    libvirtd = {
+      enable = true;
+
+      # Add VirtioFS to mount shared filesystems between host and guest
+      qemu.vhostUserPackages = [ pkgs.virtiofsd ];
+    };
+
+    # Enable the SPICE USB redirection helper, which allows unprivileged users
+    # to pass USB devices connected to this machine to libvirt VMs, both local
+    # and remote. Note that this allows users arbitrary access to USB devices.
+    spiceUSBRedirection.enable = true;
   };
 
-  # Configures the default timeout for stopping units.
-  systemd.extraConfig = "DefaultTimeoutStopSec=10s";
+  hardware.bluetooth.enable = true;
+
+  boot = {
+    # Use the systemd-boot EFI boot loader.
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
+
+    # Register ARM64 binary format and allow the use of it inside containers.
+    binfmt = {
+      emulatedSystems = [ "aarch64-linux" ];
+      preferStaticEmulators = true;
+    };
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

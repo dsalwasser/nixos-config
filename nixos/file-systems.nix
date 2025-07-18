@@ -1,7 +1,4 @@
-# This is the configuration file for the file systems, which should have been
-# set up according to the installation documentation.
-
-{ ... }: {
+{
   boot.initrd.luks.devices."enc".device = "/dev/disk/by-label/encrypted-main";
 
   fileSystems."/" = {

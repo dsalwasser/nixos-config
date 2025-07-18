@@ -236,9 +236,11 @@ git clone https://github.com/dsalwasser/nixos-config.git
 and `cd` into that directory. Afterwards, make sure you include the correct
 host module in the `flake.nix` file and ensure that you correctly specify the
 version of NixOS you have installed in the option `system.stateVersion` of the
-`nixos/configuration.nix` file. Finally, run
+`nixos/configuration.nix` file and in the option `home.stateVersion` of the
+`home-manager/home.nix` file. Finally, run
 
 ```shell
-sudo nixos-rebuild switch --flake .#nixos
+sudo nixos-rebuild switch --flake .#<target>
 ```
-to rebuild your system and to finish the installation.
+to rebuild your system and to finish the installation. Replace `<target>` with
+your desired system target (for example, `lenovo`).
