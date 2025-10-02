@@ -2,8 +2,6 @@
   programs.vscode = {
     enable = true;
 
-    mutableExtensionsDir = false;
-
     profiles.default = {
       enableUpdateCheck = false;
       enableExtensionUpdateCheck = false;
@@ -17,8 +15,6 @@
 
         # Enable better error highlighting, git support, and conversational AI assistance
         usernamehw.errorlens
-        eamodio.gitlens
-        github.copilot-chat
 
         # Spell checker
         streetsidesoftware.code-spell-checker
@@ -128,6 +124,13 @@
 
         "[json]" = {
           "editor.defaultFormatter" = "vscode.json-language-features";
+        };
+
+        "github.copilot.enable" = {
+          "*" = false;
+          "plaintext" = false;
+          "markdown" = false;
+          "scminput" = false;
         };
       };
     };

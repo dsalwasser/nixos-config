@@ -44,7 +44,7 @@
             home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.sharedModules = [
               nix-index-database.homeModules.nix-index
-              plasma-manager.homeManagerModules.plasma-manager
+              plasma-manager.homeModules.plasma-manager
               spicetify.homeManagerModules.default
             ];
             home-manager.useGlobalPkgs = false;

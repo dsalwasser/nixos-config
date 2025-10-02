@@ -15,13 +15,17 @@
       sddm = {
         enable = true;
         autoNumlock = true;
+
+        wayland = {
+          enable = true;
+          compositor = "kwin";
+        };
       };
     };
   };
 
   environment.plasma6.excludePackages = with pkgs.kdePackages; [
     elisa
-    gwenview
     kate
     khelpcenter
     konsole

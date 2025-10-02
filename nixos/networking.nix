@@ -1,12 +1,13 @@
-{
+{ pkgs, ... }: {
   networking.networkmanager = {
     enable = true;
+    plugins = [ pkgs.networkmanager-openvpn ];
 
     wifi.powersave = true;
   };
 
   # Enable encrypted DNS.
-  services.dnscrypt-proxy2 = {
+  services.dnscrypt-proxy = {
     enable = true;
 
     settings = {

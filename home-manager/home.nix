@@ -81,7 +81,7 @@
     bash-language-server
     cmake-language-server
     clang-tools
-    dockerfile-language-server-nodejs
+    dockerfile-language-server
     marksman
     nil
     nixpkgs-fmt

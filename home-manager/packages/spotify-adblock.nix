@@ -36,10 +36,5 @@ pkgs.spotify.overrideAttrs (old: {
     sed -i "s:^Name=Spotify.*:Name=Spotify-adblock:" "$out/share/spotify/spotify.desktop"
     wrapProgram $out/bin/spotify \
       --set LD_PRELOAD "${spotify-adblock}/lib/libspotifyadblock.so"
-
-    # Hide placeholder for advert banner
-    ${pkgs.unzip}/bin/unzip -p $out/share/spotify/Apps/xpui.spa xpui.js | sed 's/adsEnabled:\!0/adsEnabled:false/' > $out/share/spotify/Apps/xpui.js
-    ${pkgs.zip}/bin/zip --junk-paths --update $out/share/spotify/Apps/xpui.spa $out/share/spotify/Apps/xpui.js
-    rm $out/share/spotify/Apps/xpui.js
   '';
 })
