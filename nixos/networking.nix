@@ -1,9 +1,14 @@
 { pkgs, ... }: {
-  networking.networkmanager = {
-    enable = true;
-    plugins = [ pkgs.networkmanager-openvpn ];
+  networking = {
+    firewall.enable = true;
+    nftables.enable = true;
 
-    wifi.powersave = true;
+    networkmanager = {
+      enable = true;
+      plugins = [ pkgs.networkmanager-openvpn ];
+
+      wifi.powersave = true;
+    };
   };
 
   # Enable encrypted DNS.
