@@ -57,6 +57,10 @@
     ssh.startAgent = true;
   };
 
+  # Enable iOS backup and filesystem support.
+  services.usbmuxd.enable = true;
+  environment.systemPackages = [ pkgs.libimobiledevice ];
+
   services = {
     printing.enable = true;
 
