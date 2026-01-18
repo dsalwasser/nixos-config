@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Open in VSCodium
+Name[de]=In VSCodium öffnen
+Type=Service
+Actions=openInVSCodium
+MimeType=all/all
+X-KDE-Priority=TopLevel
+
+[Desktop Action openInVSCodium]
+Name=Open in VSCodium
+Name[de]=In VSCodium öffnen
+Icon=vscodium
+Exec=codium %f

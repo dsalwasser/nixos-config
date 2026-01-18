@@ -1,88 +1,71 @@
-{ config, pkgs, ... }: {
-  networking.interfaces.eno1.useDHCP = true;
-  networking.interfaces.wlp4s0.useDHCP = true;
+{
+  inputs,
+  pkgs,
+  ...
+}: {
+  imports = [
+    inputs.self.nixosModules.combined
+  ];
 
-  services = {
-    # Enable periodic SSD TRIM of mounted partitions in background.
-    fstrim.enable = true;
+  components = {
+    # Enable the audio subsystem component.
+    audio.enable = true;
 
-    # Set TLP as the power management tool.
-    power-profiles-daemon.enable = true;
+    # Enable KDE Plasma as the desktop environment.
+    kde-plasma.enable = true;
 
-    # Load video drivers for Xorg and Wayland.
-    xserver.videoDrivers = [ "amdgpu" "nvidia" "modesetting" ];
+    # Enable the networking subsystem component.
+    networking.enable = true;
+
+    # Enable Plymouth to have a a flicker-free graphical boot process.
+    plymouth.enable = true;
+
+    # Enable the printing subsystem component.
+    printing.enable = true;
+
+    # Enable the virtualization subsystem component.
+    virtualization.enable = true;
   };
 
-  specialisation.disable-nvidia-dgpu.configuration = {
-    boot.extraModprobeConfig = ''
-      blacklist nouveau
-      options nouveau modeset=0
-    '';
+  # Set the hostname of this device to `nixos`.
+  networking.hostName = "nixos";
 
-    services.udev.extraRules = ''
-      # Remove NVIDIA USB xHCI Host Controller devices, if present
-      ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0c0330", ATTR{power/control}="auto", ATTR{remove}="1"
-      # Remove NVIDIA USB Type-C UCSI devices, if present
-      ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0c8000", ATTR{power/control}="auto", ATTR{remove}="1"
-      # Remove NVIDIA Audio devices, if present
-      ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x040300", ATTR{power/control}="auto", ATTR{remove}="1"
-      # Remove NVIDIA VGA/3D controller devices
-      ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]*", ATTR{power/control}="auto", ATTR{remove}="1"
-    '';
-    boot.blacklistedKernelModules = [ "nouveau" "nvidia" "nvidia_drm" "nvidia_modeset" ];
-  };
+  # Set the default timezone to the German time. Also set RTC time standard to
+  # localtime, compatible with Windows in its default configuration.
+  time.timeZone = "Europe/Berlin";
+  time.hardwareClockInLocalTime = true;
 
-  hardware = {
-    # Enable all the firmware regardless of license.
-    enableAllFirmware = true;
+  # Set the console keyboard layout to German.
+  console.keyMap = "de";
 
-    # Update the CPU microcode for AMD processors.
-    cpu.amd.updateMicrocode = true;
-
-    graphics = {
-      # Enable OpenGL.
-      enable = true;
-
-      # Enabe accelerated video playback.
-      extraPackages = [ pkgs.vaapiVdpau ];
-    };
-
-    nvidia = {
-      package = config.boot.kernelPackages.nvidiaPackages.beta;
-
-      modesetting.enable = true;
-      powerManagement.enable = true;
-
-      # Do not use the NVIDIA open source kernel module (not to be confused with
-      # the independent third-party "nouveau" open source driver) as it has not
-      # good support for sleep and hibernate.
-      open = false;
-
-      prime = {
-        nvidiaBusId = "PCI:1:0:0";
-        amdgpuBusId = "PCI:6:0:0";
-
-        offload = {
-          enable = true;
-
-          # Provides `nvidia-offload` command.
-          enableOffloadCmd = true;
-        };
-      };
+  # Set the internationalization properties to German standards.
+  i18n = {
+    defaultLocale = "de_DE.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "de_DE.UTF-8";
+      LC_IDENTIFICATION = "de_DE.UTF-8";
+      LC_MEASUREMENT = "de_DE.UTF-8";
+      LC_MONETARY = "de_DE.UTF-8";
+      LC_NAME = "de_DE.UTF-8";
+      LC_NUMERIC = "de_DE.UTF-8";
+      LC_PAPER = "de_DE.UTF-8";
+      LC_TELEPHONE = "de_DE.UTF-8";
+      LC_TIME = "de_DE.UTF-8";
     };
   };
 
-  boot = {
-    # Use the latest kernel.
-    kernelPackages = pkgs.linuxPackages_latest;
+  # Enable a single user account named `sali`.
+  users.users.sali = {
+    # Set this account for a “real” user.
+    isNormalUser = true;
 
-    # Enables the amd cpu scaling and hardware framebuffer support, which is
-    # required to somewhat consistently resume from suspend-to-ram.
-    kernelParams = [ "amd_pstate=active" "nvidia_drm.fbdev=1" ];
+    # Add this user to `wheel` to grant sudo privileges.
+    extraGroups = ["audio" "docker" "kvm" "libvirtd" "networkmanager" "wheel"];
 
-    kernelModules = [ "amdgpu" "kvm-amd" "nvidia" ];
-    initrd.availableKernelModules = [ "ahci" "nvme" "usbhid" "xhci_pci" ];
+    # Set the default shell to fish.
+    shell = pkgs.fish;
   };
 
-  nixpkgs.hostPlatform = "x86_64-linux";
+  # Enable the fish shell.
+  programs.fish.enable = true;
 }

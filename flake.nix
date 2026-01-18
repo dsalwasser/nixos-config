@@ -1,11 +1,14 @@
 {
-  description = "My NixOS and Home Manager configuration.";
-
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
       url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    disko = {
+      url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -24,42 +27,55 @@
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    zjstatus = {
-      url = "github:dj95/zjstatus";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
-  outputs = { nixpkgs, home-manager, nix-index-database, plasma-manager, spicetify, ... }@inputs:
-    let
-      nixos-system = host-config: nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
+  outputs = {nixpkgs, ...} @ inputs: let
+    # Supported systems for development shells and exported packages. We
+    # include every system here. However, it likely happens that certain
+    # packages don't build for certain systems.
+    systems = [
+      "aarch64-linux"
+      "x86_64-linux"
+      "aarch64-darwin"
+      "x86_64-darwin"
+    ];
 
-        modules = [
-          ./nixos/configuration.nix
-          host-config
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.sharedModules = [
-              nix-index-database.homeModules.nix-index
-              plasma-manager.homeModules.plasma-manager
-              spicetify.homeManagerModules.default
-            ];
-            home-manager.useGlobalPkgs = false;
-            home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "backup";
-            home-manager.users.sali = import ./home-manager/home.nix;
-          }
-        ];
+    # Helper function to generate the typical per-system flake attributes.
+    forAllSystems = nixpkgs.lib.genAttrs systems;
+
+    # Helper function to build a NixOS system given a host-specific config.
+    makeNixosSystem = hostConfig:
+      nixpkgs.lib.nixosSystem {
+        # `specialArgs` are additional arguments passed to a NixOS module
+        # function. This should only include the flake inputs.
+        specialArgs = {inherit inputs;};
+
+        # We provide a single host-specific configuration file as the entry
+        # point. That file imports the rest of the host's configuration,
+        # keeping the NixOS system configuration and the flake definition
+        # separated.
+        modules = [hostConfig];
       };
-    in
-    {
-      nixosConfigurations = {
-        lenovo = nixos-system ./hosts/lenovo-legion-15ach6h/configuration.nix;
-        kvm = nixos-system ./hosts/kvm/configuration.nix;
-        virtual-box = nixos-system ./hosts/virtual-box/configuration.nix;
-      };
+  in {
+    # Packages exported by this flake.
+    packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
+
+    # Formatter used by this flake, accessible through 'nix fmt'.
+    formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
+
+    # NixOS modules exported by this flake.
+    nixosModules = import ./modules/nixos;
+
+    # Home Manager modules exported by this flake.
+    homeManagerModules = import ./modules/home-manager;
+
+    # Custom packages and modifications, exported as overlays by this flake.
+    overlays = import ./overlays {inherit inputs;};
+
+    # NixOS configurations exported by this flake.
+    nixosConfigurations = {
+      lenovo = makeNixosSystem ./hosts/lenovo-legion-15ach6h;
+      kvm = makeNixosSystem ./hosts/kvm;
     };
+  };
 }
