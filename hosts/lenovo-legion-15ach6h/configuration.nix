@@ -11,6 +11,9 @@
     # Enable the audio subsystem component.
     audio.enable = true;
 
+    # Enable the Bluetooth subsystem component.
+    bluetooth.enable = true;
+
     # Enable KDE Plasma as the desktop environment.
     kde-plasma.enable = true;
 

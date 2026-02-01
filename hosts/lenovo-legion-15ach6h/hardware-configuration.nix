@@ -25,16 +25,7 @@
     xserver.videoDrivers = ["amdgpu" "nvidia" "modesetting"];
   };
 
-  # Configure eno1 (wired) and wlp4s0 (wireless) to obtain IP addresses via DHCP.
-  networking.interfaces = {
-    eno1.useDHCP = true;
-    wlp4s0.useDHCP = true;
-  };
-
   hardware = {
-    # Enable Bluetooth functionality.
-    bluetooth.enable = true;
-
     # Update the CPU microcode for AMD processors.
     cpu.amd.updateMicrocode = true;
 

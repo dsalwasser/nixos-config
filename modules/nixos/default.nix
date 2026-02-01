@@ -1,5 +1,6 @@
 {
   audio = import ./audio.nix;
+  bluetooth = import ./bluetooth.nix;
   combined = import ./combined.nix;
   kde-plasma = import ./kde-plasma.nix;
   networking = import ./networking.nix;

@@ -1,4 +1,4 @@
-{
+{...}: {
   # Include the custom packages from the "pkgs" directory.
   additions = final: _: import ../pkgs final.pkgs;
 

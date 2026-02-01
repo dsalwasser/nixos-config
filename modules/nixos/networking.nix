@@ -12,6 +12,9 @@ in {
 
   config = lib.mkIf cfg.enable {
     networking = {
+      # Configure devices to obtain IP addresses via DHCP.
+      useDHCP = lib.mkDefault true;
+
       # Make sure that the firewall is enabled and use nftables as the backend.
       firewall.enable = lib.mkForce true;
       nftables.enable = true;
