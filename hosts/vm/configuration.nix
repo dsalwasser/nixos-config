@@ -14,6 +14,9 @@
     # Enable impermanence to wipe the root directory every reboot.
     impermanence.enable = true;
 
+    # Enable UEFI Secure Boot.
+    secure-boot.enable = true;
+
     # Enable KDE Plasma as the desktop environment.
     kde-plasma.enable = true;
 

@@ -68,6 +68,7 @@ in {
         "/var/db/sudo/"
         "/var/lib/bluetooth"
         "/var/lib/nixos"
+        "/var/lib/sbctl"
         "/var/lib/systemd"
         "/var/lib/NetworkManager"
         "/var/lib/libvirt"

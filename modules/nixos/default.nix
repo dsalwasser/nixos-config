@@ -7,5 +7,6 @@
   networking = import ./networking.nix;
   plymouth = import ./plymouth.nix;
   printing = import ./printing.nix;
+  secure-boot = import ./secure-boot.nix;
   virtualization = import ./virtualization.nix;
 }

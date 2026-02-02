@@ -6,6 +6,7 @@
     ./nix-configuration.nix
 
     inputs.impermanence.nixosModules.impermanence
+    inputs.lanzaboote.nixosModules.lanzaboote
     inputs.disko.nixosModules.disko
   ];
 }

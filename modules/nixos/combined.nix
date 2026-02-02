@@ -7,6 +7,7 @@
     ./networking.nix
     ./plymouth.nix
     ./printing.nix
+    ./secure-boot.nix
     ./virtualization.nix
   ];
 }
