@@ -83,6 +83,7 @@ in {
       hideMounts = true;
       directories = [
         "/var/lib/nixos"
+        "/var/lib/sbctl"
         "/var/lib/sops-nix"
         "/var/lib/systemd"
 

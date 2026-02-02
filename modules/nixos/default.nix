@@ -12,5 +12,6 @@
   plymouth = import ./plymouth.nix;
   printing = import ./printing.nix;
   qemu-guest = import ./qemu-guest.nix;
+  secure-boot = import ./secure-boot.nix;
   virtualization = import ./virtualization.nix;
 }

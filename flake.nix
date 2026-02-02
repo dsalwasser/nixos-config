@@ -7,6 +7,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v1.0.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     impermanence = {
       url = "github:nix-community/impermanence";
       inputs.nixpkgs.follows = "";
@@ -38,6 +43,7 @@
   outputs = {
     nixpkgs,
     disko,
+    lanzaboote,
     impermanence,
     home-manager,
     sops-nix,
@@ -70,6 +76,7 @@
         # separated.
         modules = [
           disko.nixosModules.disko
+          lanzaboote.nixosModules.lanzaboote
           impermanence.nixosModules.impermanence
           home-manager.nixosModules.home-manager
           sops-nix.nixosModules.sops

@@ -12,6 +12,7 @@
     ./plymouth.nix
     ./printing.nix
     ./qemu-guest.nix
+    ./secure-boot.nix
     ./virtualization.nix
   ];
 }

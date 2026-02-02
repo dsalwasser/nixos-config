@@ -10,6 +10,7 @@ pkgs.mkShell {
     git
     helix
     nixos-facter
+    sbctl
     sops
   ];
 }

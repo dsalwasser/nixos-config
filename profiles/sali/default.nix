@@ -56,6 +56,9 @@
     # Enable impermanence to wipe the root directory every reboot.
     impermanence.enable = true;
 
+    # Enable Secure Boot.
+    secure-boot.enable = true;
+
     # Enable the audio subsystem component.
     audio.enable = true;
 
