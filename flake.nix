@@ -12,6 +12,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    impermanence = {
+      url = "github:nix-community/impermanence";
+      inputs.nixpkgs.follows = "";
+      inputs.home-manager.follows = "";
+    };
+
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -75,7 +81,7 @@
     # NixOS configurations exported by this flake.
     nixosConfigurations = {
       lenovo = makeNixosSystem ./hosts/lenovo-legion-15ach6h;
-      kvm = makeNixosSystem ./hosts/kvm;
+      vm = makeNixosSystem ./hosts/vm;
     };
   };
 }

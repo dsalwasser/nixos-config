@@ -13,8 +13,6 @@ in {
   config = lib.mkIf cfg.enable {
     services.xserver = {
       enable = true;
-      excludePackages = [pkgs.xterm];
-
       xkb.layout = "de";
     };
 
