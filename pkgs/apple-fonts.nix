@@ -28,7 +28,6 @@
           San Francisco is an Apple designed typeface that provides
           a consistent, legible, and friendly typographic voice.
         '';
-        license = pkgs.lib.licenses.unfree;
       };
     };
 in {
@@ -42,5 +41,11 @@ in {
     makeAppleFont "sf-pro"
     "SF Pro Fonts.pkg"
     "https://devimages-cdn.apple.com/design/resources/download/SF-Pro.dmg"
-    "sha256-Lk14U5iLc03BrzO5IdjUwORADqwxKSSg6rS3OlH9aa4=";
+    "sha256-u7cLbIRELSNFUa2OW/ZAgIu6vbmK/8kXXqU97xphA+0=";
+
+  new-york =
+    makeAppleFont "new-york"
+    "NY Fonts.pkg"
+    "https://devimages-cdn.apple.com/design/resources/download/NY.dmg"
+    "sha256-HC7ttFJswPMm+Lfql49aQzdWR2osjFYHJTdgjtuI+PQ=";
 }

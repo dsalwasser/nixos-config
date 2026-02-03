@@ -100,12 +100,30 @@
     # required to somewhat consistently resume from suspend-to-ram.
     kernelParams = ["amd_pstate=active" "nvidia_drm.fbdev=1"];
 
-    kernelModules = ["amdgpu" "kvm-amd" "nvidia"];
+    kernelModules = ["amdgpu" "nvidia" "kvm-amd"];
 
     initrd = {
       systemd.enable = true;
-      kernelModules = ["amdgpu"];
-      availableKernelModules = ["ahci" "nvme" "usbhid" "xhci_pci"];
+
+      kernelModules = [
+        # Driver module for graphic card controller.
+        "amdgpu"
+        "nvidia"
+
+        # Driver module for the Ethernet and WLAN controller.
+        "r8169"
+        "rtw88_8822ce"
+      ];
+
+      availableKernelModules = [
+        # Driver modules for the disk and storage controller.
+        "ahci"
+        "nvme"
+
+        # Driver module for the USB controller.
+        "usbhid"
+        "xhci_pci"
+      ];
     };
 
     # Use the systemd-boot EFI boot loader.

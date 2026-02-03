@@ -8,6 +8,7 @@
           type = "gpt";
           partitions = {
             ESP = {
+              priority = 1;
               label = "boot";
               size = "1G";
               type = "EF00";
@@ -19,6 +20,7 @@
               };
             };
             luks = {
+              priority = 2;
               label = "luks";
               size = "100%";
               content = {

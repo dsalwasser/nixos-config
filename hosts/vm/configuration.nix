@@ -22,6 +22,12 @@
 
     # Enable Plymouth to have a a flicker-free graphical boot process.
     plymouth.enable = true;
+
+    # Enable Home Manager to configure the users.
+    home-manager = {
+      enable = true;
+      users.sali = ./home-configuration.nix;
+    };
   };
 
   users = {
@@ -37,7 +43,7 @@
       sali = {
         isNormalUser = true;
         password = "test";
-        extraGroups = ["audio" "networkmanager" "fuse" "wheel"];
+        extraGroups = ["audio" "networkmanager" "fuse" "podman" "kvm" "libvirtd" "wheel"];
       };
     };
   };

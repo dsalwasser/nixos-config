@@ -2,11 +2,6 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     disko = {
       url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -16,6 +11,11 @@
       url = "github:nix-community/impermanence";
       inputs.nixpkgs.follows = "";
       inputs.home-manager.follows = "";
+    };
+
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     nix-index-database = {
@@ -60,7 +60,12 @@
         # point. That file imports the rest of the host's configuration,
         # keeping the NixOS system configuration and the flake definition
         # separated.
-        modules = [hostConfig];
+        modules = [
+          inputs.disko.nixosModules.disko
+          inputs.impermanence.nixosModules.impermanence
+          inputs.home-manager.nixosModules.home-manager
+          hostConfig
+        ];
       };
   in {
     # Packages exported by this flake.
@@ -73,7 +78,7 @@
     nixosModules = import ./modules/nixos;
 
     # Home Manager modules exported by this flake.
-    homeManagerModules = import ./modules/home-manager;
+    homeManagerModules = import ./modules/home;
 
     # Custom packages and modifications, exported as overlays by this flake.
     overlays = import ./overlays {inherit inputs;};
