@@ -22,6 +22,11 @@
 
     # Enable Plymouth to have a a flicker-free graphical boot process.
     plymouth.enable = true;
+
+    home-manager = {
+      enable = true;
+      users.sali = ./home-configuration.nix;
+    };
   };
 
   users = {

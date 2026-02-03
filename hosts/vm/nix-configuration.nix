@@ -30,6 +30,11 @@
     };
   };
 
+  nixpkgs.overlays = [
+    inputs.self.overlays.additions
+    inputs.self.overlays.modifications
+  ];
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It's perfectly fine and recommended to leave
@@ -57,5 +62,5 @@
   #
   # For more information, see `man configuration.nix` or
   # https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion
-  system.stateVersion = "24.05"; # Did you read the comment?
+  system.stateVersion = "25.11"; # Did you read the comment?
 }
