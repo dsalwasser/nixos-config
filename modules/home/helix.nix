@@ -50,5 +50,7 @@ in {
         };
       };
     };
+
+    home.sessionVariables.EDITOR = "hx";
   };
 }

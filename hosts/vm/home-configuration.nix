@@ -16,24 +16,24 @@
     kde-plasma.enable = true;
   };
 
-  # Setup the fonts used by the system and the rendering modes.
+  # Setup the fonts used by the system.
   fonts.fontconfig = {
     enable = true;
 
     defaultFonts = {
       serif = ["SF Pro Text"];
-      sansSerif = ["New York"];
+      sansSerif = ["SF Pro Text"];
       monospace = ["SF Mono"];
       emoji = ["Noto Color Emoji"];
     };
 
-    antialias = true;
+    antialiasing = true;
     hinting = "slight";
     subpixelRendering = "rgb";
   };
 
   # Include the system fonts.
-  home.packages = with pkgs; [sf-mono sf-pro new-york];
+  home.packages = with pkgs; [sf-mono sf-pro];
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "25.11";

@@ -12,6 +12,8 @@
       users.sali = ./home-configuration.nix;
     };
 
+    nix.enable = true;
+
     # Enable KDE Plasma as the desktop environment.
     kde-plasma.enable = true;
 
@@ -64,4 +66,7 @@
 
   # Enable the fish shell.
   programs.fish.enable = true;
+
+  # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+  system.stateVersion = "25.11";
 }

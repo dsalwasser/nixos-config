@@ -1,7 +1,23 @@
-{pkgs, ...}: {
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}: {
+  nixpkgs.overlays = [
+    inputs.self.overlays.additions
+    inputs.self.overlays.modifications
+  ];
+
   components = {
     # Enable the audio subsystem component.
     audio.enable = true;
+
+    # Enable Home Manager to configure the users.
+    home-manager = {
+      enable = true;
+      users.sali = ./home-configuration.nix;
+    };
 
     # Enable impermanence to wipe the root directory every reboot.
     impermanence.enable = true;
@@ -12,13 +28,19 @@
     # Enable the networking subsystem component.
     networking.enable = true;
 
+    nix.enable = true;
+
     # Enable Plymouth to have a a flicker-free graphical boot process.
     plymouth.enable = true;
+  };
 
-    # Enable Home Manager to configure the users.
-    home-manager = {
-      enable = true;
-      users.sali = ./home-configuration.nix;
+  sops = {
+    defaultSopsFile = ../../secrets/secrets.yaml;
+    age.keyFile = "/persist/var/lib/sops-nix/keys.txt";
+
+    secrets = {
+      root-password.neededForUsers = true;
+      sali-password.neededForUsers = true;
     };
   };
 
@@ -30,11 +52,14 @@
     mutableUsers = false;
 
     users = {
-      root.password = "123";
+      root = {
+        isSystemUser = true;
+        hashedPasswordFile = config.sops.secrets.root-password.path;
+      };
 
       sali = {
         isNormalUser = true;
-        password = "test";
+        hashedPasswordFile = config.sops.secrets.sali-password.path;
         extraGroups = ["audio" "networkmanager" "fuse" "podman" "kvm" "libvirtd" "wheel"];
       };
     };
@@ -67,4 +92,7 @@
 
   # Set the hostname of this device to `nixos`.
   networking.hostName = "nixos";
+
+  # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+  system.stateVersion = "25.11";
 }
