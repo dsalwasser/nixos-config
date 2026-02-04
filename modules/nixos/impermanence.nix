@@ -60,6 +60,11 @@ in {
       };
     };
 
+    fileSystems = {
+      "/var/log".neededForBoot = true;
+      "/persist".neededForBoot = true;
+    };
+
     environment.persistence."/persist" = {
       hideMounts = true;
       directories = [
@@ -68,6 +73,7 @@ in {
         "/var/db/sudo/"
         "/var/lib/bluetooth"
         "/var/lib/nixos"
+        "/var/lib/sops-nix"
         "/var/lib/systemd"
         "/var/lib/NetworkManager"
         "/var/lib/libvirt"

@@ -18,24 +18,32 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nix-index-database = {
-      url = "github:nix-community/nix-index-database";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     plasma-manager = {
       url = "github:nix-community/plasma-manager";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
 
-    spicetify = {
-      url = "github:Gerg-L/spicetify-nix";
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = {nixpkgs, ...} @ inputs: let
+  outputs = {
+    nixpkgs,
+    disko,
+    impermanence,
+    home-manager,
+    sops-nix,
+    self,
+    ...
+  } @ inputs: let
     # Supported systems for development shells and exported packages. We
     # include every system here. However, it likely happens that certain
     # packages don't build for certain systems.
@@ -61,10 +69,11 @@
         # keeping the NixOS system configuration and the flake definition
         # separated.
         modules = [
-          inputs.disko.nixosModules.disko
-          inputs.impermanence.nixosModules.impermanence
-          inputs.home-manager.nixosModules.home-manager
-          inputs.self.nixosModules.combined
+          disko.nixosModules.disko
+          impermanence.nixosModules.impermanence
+          home-manager.nixosModules.home-manager
+          sops-nix.nixosModules.sops
+          self.nixosModules.combined
           hostConfig
         ];
       };

@@ -102,6 +102,18 @@ in {
     programs.vicinae = {
       enable = true;
       systemd.enable = true;
+
+      settings = {
+        theme = {
+          dark.name = "vicinae-dark";
+        };
+        launcher_window = {
+          opacity = 0.98;
+          client_side_decorations.enabled = true;
+        };
+        close_on_focus_loss = true;
+        providers.files.preferences.autoIndexing = false;
+      };
     };
 
     # Enable Ozone Wayland support in Chromium and Electron based applications.

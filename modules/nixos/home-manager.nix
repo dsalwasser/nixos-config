@@ -23,14 +23,11 @@ in {
       sharedModules = [
         inputs.nix-index-database.homeModules.nix-index
         inputs.plasma-manager.homeModules.plasma-manager
-        inputs.spicetify.homeManagerModules.default
         inputs.self.homeManagerModules.combined
       ];
 
       useGlobalPkgs = true;
       useUserPackages = true;
-
-      # users.sali = import ../../hosts/vm/home-configuration.nix;
 
       users =
         lib.mapAttrs (name: path: {

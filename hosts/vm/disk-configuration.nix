@@ -26,7 +26,18 @@
               content = {
                 type = "luks";
                 name = "enc";
-                settings = {crypttabExtraOpts = ["fido2-device=auto" "token-timeout=10"];};
+                extraOpenArgs = [
+                  "--allow-discards"
+                  "--perf-no_read_workqueue"
+                  "--perf-no_write_workqueue"
+                ];
+                settings = {
+                  allowDiscards = true;
+                  crypttabExtraOpts = [
+                    "fido2-device=auto"
+                    "x-initrd.attach"
+                  ];
+                };
                 content = {
                   type = "btrfs";
                   extraArgs = ["-L" "nixos" "-f"];
@@ -56,6 +67,10 @@
                       mountpoint = "/persist";
                       mountOptions = ["subvol=persist" "compress=zstd" "noatime"];
                     };
+                    "/swap" = {
+                      mountpoint = "/swap";
+                      swap.swapfile.size = "8G";
+                    };
                   };
                 };
               };
@@ -66,6 +81,10 @@
     };
   };
 
-  fileSystems."/var/log".neededForBoot = true;
-  fileSystems."/persist".neededForBoot = true;
+  boot = {
+    resumeDevice = "/dev/disk/by-label/nixos";
+    kernelParams = ["resume_offset=140544"];
+    initrd.supportedFilesystems = ["btrfs"];
+    initrd.luks.devices."enc".allowDiscards = true;
+  };
 }
