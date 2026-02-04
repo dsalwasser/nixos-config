@@ -56,10 +56,8 @@ in {
         }
       ];
 
-      hotkeys.commands."vicinae" = {
-        name = "Vicinae";
-        key = "Ctrl+Space";
-        command = "vicinae toggle";
+      shortcuts = {
+        "services/vicinae.desktop"."open" = "Meta+Space";
       };
 
       panels = [

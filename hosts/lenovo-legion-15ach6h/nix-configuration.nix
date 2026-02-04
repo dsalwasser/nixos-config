@@ -19,16 +19,24 @@
     nixPath = lib.mapAttrsToList (key: _: "${key}=flake:${key}") flakeInputs;
 
     settings = {
-      # Enable flakes and new 'nix' command.
-      experimental-features = "nix-command flakes";
-
       # Deduplicate and optimize nix store.
       auto-optimise-store = true;
 
+      # Enable flakes and new 'nix' command.
+      experimental-features = "nix-command flakes";
+
       # Workaround for https://github.com/NixOS/nix/issues/9574.
       nix-path = config.nix.nixPath;
+
+      # Disable warnings that the Git tree is dirty.
+      warn-dirty = false;
     };
   };
+
+  nixpkgs.overlays = [
+    inputs.self.overlays.additions
+    inputs.self.overlays.modifications
+  ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

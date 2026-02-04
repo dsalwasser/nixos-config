@@ -5,5 +5,7 @@ pkgs.mkShell {
   packages = with pkgs; [
     disko
     git
+    helix
+    nixos-facter
   ];
 }

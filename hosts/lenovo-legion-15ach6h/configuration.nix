@@ -1,18 +1,16 @@
-{
-  inputs,
-  pkgs,
-  ...
-}: {
-  imports = [
-    inputs.self.nixosModules.combined
-  ];
-
+{pkgs, ...}: {
   components = {
     # Enable the audio subsystem component.
     audio.enable = true;
 
     # Enable the Bluetooth subsystem component.
     bluetooth.enable = true;
+
+    # Enable Home Manager to configure the users.
+    home-manager = {
+      enable = true;
+      users.sali = ./home-configuration.nix;
+    };
 
     # Enable KDE Plasma as the desktop environment.
     kde-plasma.enable = true;
@@ -30,17 +28,6 @@
     virtualization.enable = true;
   };
 
-  # Set the hostname of this device to `nixos`.
-  networking.hostName = "nixos";
-
-  # Set the default timezone to the German time. Also set RTC time standard to
-  # localtime, compatible with Windows in its default configuration.
-  time.timeZone = "Europe/Berlin";
-  time.hardwareClockInLocalTime = true;
-
-  # Set the console keyboard layout to German.
-  console.keyMap = "de";
-
   # Set the internationalization properties to German standards.
   i18n = {
     defaultLocale = "de_DE.UTF-8";
@@ -57,12 +44,18 @@
     };
   };
 
+  # Set the console keyboard layout to German.
+  console.keyMap = "de";
+
+  # Set the default timezone to the German time.
+  time.timeZone = "Europe/Berlin";
+
+  # Set the hostname of this device to `nixos`.
+  networking.hostName = "nixos";
+
   # Enable a single user account named `sali`.
   users.users.sali = {
-    # Set this account for a “real” user.
     isNormalUser = true;
-
-    # Add this user to `wheel` to grant sudo privileges.
     extraGroups = ["audio" "docker" "kvm" "libvirtd" "networkmanager" "wheel"];
 
     # Set the default shell to fish.

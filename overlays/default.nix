@@ -13,5 +13,10 @@
       };
       patches = [];
     };
+
+    # Use TexLive as the tex distribution, containing every package.
+    tex = final.texlive.combine {
+      inherit (final.texlive) scheme-full;
+    };
   };
 }

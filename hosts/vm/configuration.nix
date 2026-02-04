@@ -1,12 +1,4 @@
-{
-  inputs,
-  pkgs,
-  ...
-}: {
-  imports = [
-    inputs.self.nixosModules.combined
-  ];
-
+{pkgs, ...}: {
   components = {
     # Enable the audio subsystem component.
     audio.enable = true;
