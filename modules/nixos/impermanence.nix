@@ -6,7 +6,7 @@
   cfg = config.components.impermanence;
 in {
   options.components.impermanence = {
-    enable = lib.mkEnableOption "Enable impermanence.";
+    enable = lib.mkEnableOption "Whether to enable impermanence module.";
   };
 
   config = lib.mkIf cfg.enable {

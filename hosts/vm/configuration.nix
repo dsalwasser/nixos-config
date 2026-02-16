@@ -1,46 +1,38 @@
 {
-  config,
-  pkgs,
   inputs,
+  pkgs,
   ...
 }: {
+  # Make the additional packages and package modifications from this flake
+  # available.
   nixpkgs.overlays = [
     inputs.self.overlays.additions
     inputs.self.overlays.modifications
   ];
 
   components = {
+    # Use modern Nix settings.
+    nix.enable = true;
+
+    # Enable impermanence to wipe the root directory every reboot.
+    impermanence.enable = true;
+
     # Enable the audio subsystem component.
     audio.enable = true;
+
+    # Enable the networking subsystem component.
+    networking.enable = true;
+
+    # Enable Plymouth to have a a flicker-free graphical boot process.
+    plymouth.enable = true;
+
+    # Enable KDE Plasma as the desktop environment.
+    kde-plasma.enable = true;
 
     # Enable Home Manager to configure the users.
     home-manager = {
       enable = true;
       users.sali = ./home-configuration.nix;
-    };
-
-    # Enable impermanence to wipe the root directory every reboot.
-    impermanence.enable = true;
-
-    # Enable KDE Plasma as the desktop environment.
-    kde-plasma.enable = true;
-
-    # Enable the networking subsystem component.
-    networking.enable = true;
-
-    nix.enable = true;
-
-    # Enable Plymouth to have a a flicker-free graphical boot process.
-    plymouth.enable = true;
-  };
-
-  sops = {
-    defaultSopsFile = ../../secrets/secrets.yaml;
-    age.keyFile = "/persist/var/lib/sops-nix/keys.txt";
-
-    secrets = {
-      root-password.neededForUsers = true;
-      sali-password.neededForUsers = true;
     };
   };
 
@@ -54,12 +46,12 @@
     users = {
       root = {
         isSystemUser = true;
-        hashedPasswordFile = config.sops.secrets.root-password.path;
+        password = "apple";
       };
 
       sali = {
         isNormalUser = true;
-        hashedPasswordFile = config.sops.secrets.sali-password.path;
+        password = "apple";
         extraGroups = ["audio" "networkmanager" "fuse" "podman" "kvm" "libvirtd" "wheel"];
       };
     };

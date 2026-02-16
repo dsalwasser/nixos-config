@@ -1,12 +1,22 @@
-{pkgs, ...}: let
-  makeAppleFont = name: pkgName: url: hash:
-    pkgs.stdenvNoCC.mkDerivation {
+{
+  lib,
+  stdenvNoCC,
+  fetchurl,
+  undmg,
+  p7zip,
+}: let
+  mkAppleFont = {
+    name,
+    pkgName,
+    url,
+    sha256,
+  }:
+    stdenvNoCC.mkDerivation {
       inherit name;
 
-      src = pkgs.fetchurl {inherit url hash;};
-      buildInputs = [pkgs.undmg pkgs.p7zip];
+      src = fetchurl {inherit url sha256;};
 
-      setSourceRoot = "sourceRoot=`pwd`";
+      nativeBuildInputs = [undmg p7zip];
 
       unpackPhase = ''
         undmg $src
@@ -22,30 +32,24 @@
         find -name \*.ttf -exec mv {} $out/share/fonts/truetype/ \;
       '';
 
-      meta = {
+      meta = with lib; {
+        description = "Apple's ${name} font family";
         homepage = "https://developer.apple.com/fonts/";
-        description = ''
-          San Francisco is an Apple designed typeface that provides
-          a consistent, legible, and friendly typographic voice.
-        '';
+        platforms = platforms.all;
       };
     };
-in {
-  sf-mono =
-    makeAppleFont "sf-mono"
-    "SF Mono Fonts.pkg"
-    "https://devimages-cdn.apple.com/design/resources/download/SF-Mono.dmg"
-    "sha256-bUoLeOOqzQb5E/ZCzq0cfbSvNO1IhW1xcaLgtV2aeUU=";
 
-  sf-pro =
-    makeAppleFont "sf-pro"
-    "SF Pro Fonts.pkg"
-    "https://devimages-cdn.apple.com/design/resources/download/SF-Pro.dmg"
-    "sha256-u7cLbIRELSNFUa2OW/ZAgIu6vbmK/8kXXqU97xphA+0=";
-
-  new-york =
-    makeAppleFont "new-york"
-    "NY Fonts.pkg"
-    "https://devimages-cdn.apple.com/design/resources/download/NY.dmg"
-    "sha256-HC7ttFJswPMm+Lfql49aQzdWR2osjFYHJTdgjtuI+PQ=";
-}
+  fontData = {
+    sf-mono = {
+      pkgName = "SF Mono Fonts.pkg";
+      url = "https://devimages-cdn.apple.com/design/resources/download/SF-Mono.dmg";
+      sha256 = "sha256-bUoLeOOqzQb5E/ZCzq0cfbSvNO1IhW1xcaLgtV2aeUU=";
+    };
+    sf-pro = {
+      pkgName = "SF Pro Fonts.pkg";
+      url = "https://devimages-cdn.apple.com/design/resources/download/SF-Pro.dmg";
+      sha256 = "sha256-W0sZkipBtrduInk0oocbFAXX1qy0Z+yk2xUyFfDWx4s=";
+    };
+  };
+in
+  lib.mapAttrs (name: cfg: mkAppleFont ({inherit name;} // cfg)) fontData

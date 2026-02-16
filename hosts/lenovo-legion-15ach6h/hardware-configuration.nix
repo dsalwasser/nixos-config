@@ -94,7 +94,8 @@
 
   boot = {
     # Use the latest Linux kernel.
-    kernelPackages = pkgs.linuxPackages_latest;
+    # TODO: Enable once Nvidia driver compilation issues are solved.
+    # kernelPackages = pkgs.linuxPackages_latest;
 
     # Enables the AMD CPU scaling and hardware framebuffer support, which is
     # required to somewhat consistently resume from suspend-to-ram.

@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   cfg = config.components.home.git;
@@ -20,8 +21,10 @@ in {
       };
 
       signing = {
-        key = "6CD20B2D0655BDF6";
+        key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGzE9O1OSxK/2qYqfSePD49L5HEjiN0nd5s18qNct28o daniel.salwasser@outlook.com";
+        format = "ssh";
         signByDefault = true;
+        signer = "${pkgs.openssh}/bin/ssh-keygen";
       };
     };
 

@@ -6,7 +6,7 @@
   cfg = config.components.plymouth;
 in {
   options.components.plymouth = {
-    enable = lib.mkEnableOption "Enable the Plymouth subsystem.";
+    enable = lib.mkEnableOption "Whether to enable Plymouth.";
   };
 
   config = lib.mkIf cfg.enable {

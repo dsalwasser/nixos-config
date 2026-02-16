@@ -7,7 +7,7 @@
   cfg = config.components.networking;
 in {
   options.components.networking = {
-    enable = lib.mkEnableOption "Enable the networking subsystem.";
+    enable = lib.mkEnableOption "Whether to enable the networking subsystem.";
   };
 
   config = lib.mkIf cfg.enable {

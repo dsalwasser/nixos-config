@@ -6,7 +6,7 @@
   cfg = config.components.audio;
 in {
   options.components.audio = {
-    enable = lib.mkEnableOption "Enable the audio subsystem.";
+    enable = lib.mkEnableOption "Whether to enable the audio subsystem.";
   };
 
   config = lib.mkIf cfg.enable {

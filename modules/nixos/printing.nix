@@ -6,7 +6,7 @@
   cfg = config.components.printing;
 in {
   options.components.printing = {
-    enable = lib.mkEnableOption "Enable the printing subsystem.";
+    enable = lib.mkEnableOption "Whether to enable the printing subsystem.";
   };
 
   config = lib.mkIf cfg.enable {

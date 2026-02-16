@@ -6,7 +6,7 @@
   cfg = config.components.bluetooth;
 in {
   options.components.bluetooth = {
-    enable = lib.mkEnableOption "Enable the Bluetooth subsystem.";
+    enable = lib.mkEnableOption "Whether to enable the Bluetooth subsystem.";
   };
 
   config = lib.mkIf cfg.enable {

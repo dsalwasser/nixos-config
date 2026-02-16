@@ -1,14 +1,13 @@
-{
+{pkgs, ...}: {
   services = {
     qemuGuest.enable = true;
     spice-vdagentd.enable = true;
   };
 
   boot = {
-    loader = {
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
-    };
+    kernelPackages = pkgs.linuxPackages_latest;
+
+    kernelModules = ["kvm-amd"];
 
     initrd = {
       availableKernelModules = [
@@ -37,7 +36,10 @@
       ];
     };
 
-    kernelModules = ["kvm-amd"];
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
   };
 
   nixpkgs.hostPlatform = "x86_64-linux";

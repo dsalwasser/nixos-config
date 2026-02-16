@@ -6,7 +6,7 @@
   cfg = config.components.home.kde-plasma;
 in {
   options.components.home.kde-plasma = {
-    enable = lib.mkEnableOption "Whether to enable the KDE Plasma config.";
+    enable = lib.mkEnableOption "Whether to enable KDE Plasma.";
   };
 
   config = lib.mkIf cfg.enable {
@@ -57,6 +57,11 @@ in {
       ];
 
       shortcuts = {
+        "kwin" = {
+          Overview = "Meta+Tab";
+          ExposeAll = "Meta+CapsLock";
+        };
+
         "services/vicinae.desktop"."open" = "Meta+Space";
       };
 
@@ -94,8 +99,16 @@ in {
         }
       ];
 
-      # Disable the Baloo file indexer.
-      configFile.baloofilerc."Basic Settings"."Indexing-Enabled" = false;
+      configFile = {
+        # Disable the Baloo file indexer.
+        baloofilerc."Basic Settings"."Indexing-Enabled" = false;
+
+        # Set the default terminal emulator to Alacritty.
+        kdeglobals.General = {
+          TerminalApplication = "alacritty";
+          TerminalService = "Alacritty.desktop";
+        };
+      };
     };
 
     # Alternative desktop launcher to KRunner.
@@ -112,7 +125,34 @@ in {
           client_side_decorations.enabled = true;
         };
         close_on_focus_loss = true;
-        providers.files.preferences.autoIndexing = false;
+        providers = {
+          browser-extension.enabled = false;
+          core.entrypoints = {
+            documentation.enabled = false;
+            keybind-settings.enabled = false;
+            list-extensions.enabled = false;
+            manage-fallback.enabled = false;
+            oauth-token-store.enabled = false;
+            open-config-file.enabled = false;
+            open-default-config.enabled = false;
+            reload-scripts.enabled = false;
+            refresh-apps.enabled = false;
+            report-bug.enabled = false;
+            sponsor.enabled = false;
+            store.enabled = false;
+          };
+          files.preferences.autoIndexing = false;
+          developer.enabled = false;
+          font.enabled = false;
+          manage-shortcuts.enabled = false;
+          power.entrypoints = {
+            sleep.enabled = false;
+            soft-reboot.enabled = false;
+          };
+          raycast-compat.enabled = false;
+          theme.enabled = false;
+          wm.enabled = false;
+        };
       };
     };
 

@@ -7,7 +7,7 @@
   cfg = config.components.kde-plasma;
 in {
   options.components.kde-plasma = {
-    enable = lib.mkEnableOption "Enable audio";
+    enable = lib.mkEnableOption "Whether to enable KDE Plasma.";
   };
 
   config = lib.mkIf cfg.enable {

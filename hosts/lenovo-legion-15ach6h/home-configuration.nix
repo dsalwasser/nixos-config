@@ -1,24 +1,40 @@
 {pkgs, ...}: {
   components.home = {
+    # Use Alacritty as the terminal emulator.
     alacritty.enable = true;
-    eza.enable = true;
-    fish.enable = true;
-    git.enable = true;
-    helix.enable = true;
+
+    # Use Zellij as the terminal multiplexer.
     zellij.enable = true;
+
+    # Use fish as the command line shell.
+    fish.enable = true;
+
+    # Use Helix as the text editor.
+    helix.enable = true;
+
+    # Use eza as an alternative to ls.
+    eza.enable = true;
+
+    # Enable Git and GnuPG.
+    git.enable = true;
+    gpg.enable = true;
+
+    # Add chromium and firefox as browsers.
+    chromium.enable = true;
     firefox = {
       enable = true;
       makeDefaultBrowser = true;
     };
-    vscode.enable = true;
+
+    # Configure KDE Plasma as well as Ipe and VSCode.
     kde-plasma.enable = true;
+    ipe.enable = true;
+    vscode.enable = true;
   };
 
   home.packages = with pkgs; [
     # Command-line tools
     bottom
-    gnupg
-    nix-your-shell
     quickemu
     restic
 
@@ -33,10 +49,8 @@
 
     # Desktop applications
     bitwarden-desktop
-    chromium
     easyeffects
     inkscape
-    ipe
     mpv
     pympress
     signal-desktop
@@ -45,7 +59,6 @@
     yubioath-flutter
 
     # Fonts
-    new-york
     sf-mono
     sf-pro
   ];
@@ -66,18 +79,8 @@
     subpixelRendering = "rgb";
   };
 
-  # Point Ipe to the the directory containing `pdflatex` and `xelatex`.
-  home.sessionVariables.IPELATEXPATH = "${pkgs.tex}/bin/";
-
-  # Enable file database for nixpkgs.
+  # Integrate nix-index with the shell.
   programs.nix-index.enable = true;
-
-  # Enable GnuPG private key agent and change the Pinentry interface to work with KDE Plasma.
-  services.gpg-agent = {
-    enable = true;
-    enableFishIntegration = true;
-    pinentry.package = pkgs.pinentry-qt;
-  };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "25.11";

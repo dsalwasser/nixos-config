@@ -7,7 +7,7 @@
   cfg = config.components.virtualization;
 in {
   options.components.virtualization = {
-    enable = lib.mkEnableOption "Enable the virtualization subsystem.";
+    enable = lib.mkEnableOption "Whether to enable the virtualization subsystem.";
   };
 
   config = lib.mkIf cfg.enable {

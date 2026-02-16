@@ -80,4 +80,9 @@
       };
     };
   };
+
+  # To make Hibernation work, we need to specify a resume offset obtained via
+  # the following command:
+  # - btrfs inspect-internal map-swapfile -o /swap/swapfile
+  boot.kernelParams = ["resume=/dev/mapper/enc" "resume_offset=533760"];
 }

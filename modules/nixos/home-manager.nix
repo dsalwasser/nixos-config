@@ -7,7 +7,7 @@
   cfg = config.components.home-manager;
 in {
   options.components.home-manager = {
-    enable = lib.mkEnableOption "Enable Home Manager.";
+    enable = lib.mkEnableOption "Whether to enable Home Manager.";
 
     users = lib.mkOption {
       type = lib.types.attrsOf lib.types.path;
@@ -21,8 +21,8 @@ in {
       extraSpecialArgs = {inherit inputs;};
 
       sharedModules = [
-        inputs.nix-index-database.homeModules.nix-index
         inputs.plasma-manager.homeModules.plasma-manager
+        inputs.nix-index-database.homeModules.nix-index
         inputs.self.homeManagerModules.combined
       ];
 

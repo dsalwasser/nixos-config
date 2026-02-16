@@ -7,7 +7,7 @@
   cfg = config.components.nix;
 in {
   options.components.nix = {
-    enable = lib.mkEnableOption "Enable the audio subsystem.";
+    enable = lib.mkEnableOption "Whether to enable modern Nix settings.";
   };
 
   config = lib.mkIf cfg.enable {
@@ -26,11 +26,23 @@ in {
       nixPath = lib.mapAttrsToList (key: _: "${key}=flake:${key}") flakeInputs;
 
       settings = {
-        # Deduplicate and optimize nix store.
+        # Automatically detect files in the store that have identical contents,
+        # and replaces them with hard links to a single copy.
         auto-optimise-store = true;
 
-        # Enable flakes and new 'nix' command.
+        # Enable Nix flakes and the new 'nix' command.
         experimental-features = "nix-command flakes";
+
+        # Increase the parallel TCP connections used to fetch files.
+        http-connections = 128;
+
+        # Increase the maximum number of substitution jobs that Nix will try to
+        # run in parallel.
+        max-substitution-jobs = 128;
+
+        # Increase the maximum number of jobs that Nix will try to build
+        # locally in parallel.
+        max-jobs = "auto";
 
         # Workaround for https://github.com/NixOS/nix/issues/9574.
         nix-path = config.nix.nixPath;

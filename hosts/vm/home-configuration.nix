@@ -1,20 +1,35 @@
 {pkgs, ...}: {
   components.home = {
+    # Use Alacritty as the terminal emulator.
     alacritty.enable = true;
-    eza.enable = true;
-    fish.enable = true;
-    git.enable = true;
-    helix.enable = true;
+
+    # Use Zellij as the terminal multiplexer.
     zellij.enable = true;
 
+    # Use fish as the command line shell.
+    fish.enable = true;
+
+    # Use Helix as the text editor.
+    helix.enable = true;
+
+    # Use eza as an alternative to ls.
+    eza.enable = true;
+
+    # Enable Git.
+    git.enable = true;
+
+    # Enable Firefox as the default browser.
     firefox = {
       enable = true;
       makeDefaultBrowser = true;
     };
-    vscode.enable = true;
 
+    # Configure KDE Plasma.
     kde-plasma.enable = true;
   };
+
+  # Include the system fonts.
+  home.packages = with pkgs; [sf-mono sf-pro];
 
   # Setup the fonts used by the system.
   fonts.fontconfig = {
@@ -32,8 +47,8 @@
     subpixelRendering = "rgb";
   };
 
-  # Include the system fonts.
-  home.packages = with pkgs; [sf-mono sf-pro];
+  # Integrate nix-index with the shell.
+  programs.nix-index.enable = true;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "25.11";
