@@ -11,25 +11,16 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    services.xserver = {
-      enable = true;
-      xkb.layout = "de";
-    };
-
     services = {
       desktopManager.plasma6.enable = true;
 
-      displayManager = {
-        defaultSession = "plasma";
+      displayManager.sddm = {
+        enable = true;
+        autoNumlock = true;
 
-        sddm = {
+        wayland = {
           enable = true;
-          autoNumlock = true;
-
-          wayland = {
-            enable = true;
-            compositor = "kwin";
-          };
+          compositor = "kwin";
         };
       };
     };
@@ -42,11 +33,13 @@ in {
       ];
 
       plasma6.excludePackages = with pkgs.kdePackages; [
+        discover
         elisa
         kate
         konsole
         khelpcenter
         ktexteditor
+        kwin-x11
         okular
       ];
     };
