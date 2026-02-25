@@ -15,30 +15,43 @@
     # Use eza as an alternative to ls.
     eza.enable = true;
 
-    # Enable Git.
+    # Enable Git and GnuPG.
     git.enable = true;
+    gpg.enable = true;
 
-    # Enable Firefox as the default browser.
+    # Add Firefox as a browser.
     firefox = {
       enable = true;
       makeDefaultBrowser = true;
     };
 
-    # Configure KDE Plasma.
+    # Configure KDE Plasma and VSCode.
     kde-plasma.enable = true;
+    vscode.enable = true;
   };
 
-  # Include the system fonts.
-  home.packages = with pkgs; [sf-mono sf-pro];
+  home.packages = with pkgs; [
+    # Command-line tools
+    bottom
+    restic
+
+    # Formatters
+    alejandra
+
+    # Desktop applications
+    bitwarden-desktop
+    tor-browser
+    yubioath-flutter
+  ];
 
   # Setup the fonts used by the system.
   fonts.fontconfig = {
     enable = true;
 
     defaultFonts = {
-      serif = ["SF Pro Text"];
-      sansSerif = ["SF Pro Text"];
-      monospace = ["SF Mono"];
+      serif = ["Noto Sans"];
+      sansSerif = ["Noto Sans"];
+      monospace = ["Noto Mono"];
       emoji = ["Noto Color Emoji"];
     };
 
@@ -46,9 +59,6 @@
     hinting = "slight";
     subpixelRendering = "rgb";
   };
-
-  # Integrate nix-index with the shell.
-  programs.nix-index.enable = true;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "25.11";

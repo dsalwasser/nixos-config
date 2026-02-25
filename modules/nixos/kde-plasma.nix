@@ -8,26 +8,29 @@
 in {
   options.components.kde-plasma = {
     enable = lib.mkEnableOption "Whether to enable KDE Plasma.";
+    autoLoginUser = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      example = "sali";
+      description = "Username to log in automatically to KDE Plasma. Set to null to disable autologin.";
+    };
   };
 
   config = lib.mkIf cfg.enable {
     services = {
       desktopManager.plasma6.enable = true;
 
-      displayManager.sddm = {
-        enable = true;
-        autoNumlock = true;
-
-        wayland = {
+      displayManager = {
+        plasma-login-manager.enable = true;
+        autoLogin = lib.mkIf (cfg.autoLoginUser != null) {
           enable = true;
-          compositor = "kwin";
+          user = cfg.autoLoginUser;
         };
       };
     };
 
     environment = {
       systemPackages = with pkgs; [
-        kdePackages.sddm-kcm
         wayland-utils
         wl-clipboard
       ];

@@ -78,17 +78,28 @@
         ];
       };
   in {
-    # Packages exported by this flake.
-    packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
+    # Apps exported by this flake.
+    apps = forAllSystems (system: import ./apps nixpkgs.legacyPackages.${system});
 
     # Formatter used by this flake, accessible through 'nix fmt'.
     formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
+    # Home Manager modules exported by this flake.
+    homeManagerModules = import ./modules/home;
+
     # NixOS modules exported by this flake.
     nixosModules = import ./modules/nixos;
 
-    # Home Manager modules exported by this flake.
-    homeManagerModules = import ./modules/home;
+    # Profiles exported by this flake.
+    nixosProfiles = import ./profiles;
+
+    # Packages exported by this flake.
+    packages = forAllSystems (system:
+      (import ./pkgs nixpkgs.legacyPackages.${system})
+      // {
+        portable-image = inputs.self.nixosConfigurations.portable.config.system.build.finalImage;
+        portable-live-image = inputs.self.nixosConfigurations.portable-live.config.system.build.image;
+      });
 
     # Custom packages and modifications, exported as overlays by this flake.
     overlays = import ./overlays {inherit inputs;};
@@ -96,6 +107,8 @@
     # NixOS configurations exported by this flake.
     nixosConfigurations = {
       lenovo = makeNixosSystem ./hosts/lenovo-legion-15ach6h;
+      portable = makeNixosSystem ./hosts/portable;
+      portable-live = makeNixosSystem ./hosts/portable-live;
       vm = makeNixosSystem ./hosts/vm;
     };
   };

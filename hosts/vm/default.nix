@@ -1,6 +1,6 @@
-{
+{inputs, ...}: {
   imports = [
-    ./configuration.nix
+    inputs.self.nixosProfiles.portable
     ./disk-configuration.nix
     ./hardware-configuration.nix
   ];

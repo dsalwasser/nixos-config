@@ -7,7 +7,7 @@
   cfg = config.components.nix;
 in {
   options.components.nix = {
-    enable = lib.mkEnableOption "Whether to enable modern Nix settings.";
+    enable = lib.mkEnableOption "Whether to use modern Nix settings.";
   };
 
   config = lib.mkIf cfg.enable {

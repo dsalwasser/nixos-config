@@ -1,7 +1,7 @@
 {inputs, ...}: {
   imports = [
-    inputs.self.nixosProfiles.sali
-    ./disk-configuration.nix
+    inputs.self.nixosProfiles.portable
     ./hardware-configuration.nix
+    ./image-configuration.nix
   ];
 }

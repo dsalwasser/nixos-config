@@ -2,7 +2,6 @@
   lib,
   stdenvNoCC,
   fetchurl,
-  undmg,
   p7zip,
 }: let
   mkAppleFont = {
@@ -16,18 +15,18 @@
 
       src = fetchurl {inherit url sha256;};
 
-      nativeBuildInputs = [undmg p7zip];
+      nativeBuildInputs = [p7zip];
 
       unpackPhase = ''
-        undmg $src
+        7z x $src
         7z x '${pkgName}'
         7z x 'Payload~'
       '';
 
       installPhase = ''
-        mkdir -p $out/share/fonts
         mkdir -p $out/share/fonts/opentype
         mkdir -p $out/share/fonts/truetype
+
         find -name \*.otf -exec mv {} $out/share/fonts/opentype/ \;
         find -name \*.ttf -exec mv {} $out/share/fonts/truetype/ \;
       '';
@@ -41,12 +40,12 @@
 
   fontData = {
     sf-mono = {
-      pkgName = "SF Mono Fonts.pkg";
+      pkgName = "SFMonoFonts/SF Mono Fonts.pkg";
       url = "https://devimages-cdn.apple.com/design/resources/download/SF-Mono.dmg";
       sha256 = "sha256-bUoLeOOqzQb5E/ZCzq0cfbSvNO1IhW1xcaLgtV2aeUU=";
     };
     sf-pro = {
-      pkgName = "SF Pro Fonts.pkg";
+      pkgName = "SFProFonts/SF Pro Fonts.pkg";
       url = "https://devimages-cdn.apple.com/design/resources/download/SF-Pro.dmg";
       sha256 = "sha256-W0sZkipBtrduInk0oocbFAXX1qy0Z+yk2xUyFfDWx4s=";
     };

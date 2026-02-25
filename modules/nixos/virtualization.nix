@@ -8,6 +8,7 @@
 in {
   options.components.virtualization = {
     enable = lib.mkEnableOption "Whether to enable the virtualization subsystem.";
+    enableArm64 = lib.mkEnableOption "Whether to enable ARM64 virtualization.";
   };
 
   config = lib.mkIf cfg.enable {
@@ -48,7 +49,7 @@ in {
     };
 
     # Register ARM64 binary format and allow the use of it inside containers.
-    boot.binfmt = {
+    boot.binfmt = lib.mkIf cfg.enableArm64 {
       emulatedSystems = ["aarch64-linux"];
       preferStaticEmulators = true;
     };

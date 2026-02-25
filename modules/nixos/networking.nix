@@ -26,6 +26,9 @@ in {
       };
     };
 
+    # Disable NetworkManager-wait-online.service to improve startup time.
+    systemd.services.NetworkManager-wait-online.enable = lib.mkForce false;
+
     # Enable encrypted DNS.
     services.dnscrypt-proxy = {
       enable = true;
