@@ -97,8 +97,8 @@
     packages = forAllSystems (system:
       (import ./pkgs nixpkgs.legacyPackages.${system})
       // {
+        installer-image = inputs.self.nixosConfigurations.installer.config.system.build.image;
         portable-image = inputs.self.nixosConfigurations.portable.config.system.build.finalImage;
-        portable-live-image = inputs.self.nixosConfigurations.portable-live.config.system.build.image;
       });
 
     # Custom packages and modifications, exported as overlays by this flake.
@@ -106,9 +106,9 @@
 
     # NixOS configurations exported by this flake.
     nixosConfigurations = {
-      lenovo = makeNixosSystem ./hosts/lenovo-legion-15ach6h;
+      installer = makeNixosSystem ./hosts/installer;
+      lenovo = makeNixosSystem ./hosts/lenovo;
       portable = makeNixosSystem ./hosts/portable;
-      portable-live = makeNixosSystem ./hosts/portable-live;
       vm = makeNixosSystem ./hosts/vm;
     };
   };

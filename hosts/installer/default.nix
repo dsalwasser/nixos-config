@@ -1,6 +1,6 @@
 {inputs, ...}: {
   imports = [
-    inputs.self.nixosProfiles.portable-live
+    inputs.self.nixosProfiles.installer
     ./hardware-configuration.nix
     ./image-configuration.nix
   ];

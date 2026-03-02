@@ -7,33 +7,41 @@
     text = ''
       if [ "$#" -ne 1 ]; then
         echo "Error: Invalid number of arguments."
-        echo "Usage: nix run .#qemu-boot -- <disk-image.raw>"
+        echo "Usage: nix run .#qemu-boot -- <file.iso|file.raw>"
         exit 1
       fi
 
-      DISK_IMAGE="$1"
+      FILE="$1"
       OVMF_BIN="${pkgs.OVMF.fd}/FV/OVMF.fd"
 
-      if [ ! -f "$DISK_IMAGE" ]; then
-        echo "Error: File '$DISK_IMAGE' not found."
+      if [ ! -f "$FILE" ]; then
+        echo "Error: File '$FILE' not found."
         exit 1
       fi
 
-      if [ ! -w "$DISK_IMAGE" ]; then
-        echo "Error: You do not have write permissions for '$DISK_IMAGE'."
-        exit 1
-      fi
+      echo "Starting VM with: '$FILE'."
 
-      echo "Starting VM with image: '$DISK_IMAGE'."
-
-      exec qemu-system-x86_64 \
-        -enable-kvm \
-        -m 2G \
-        -drive file="$DISK_IMAGE",format=raw,if=virtio \
-        -bios "$OVMF_BIN" \
-        -device virtio-vga-gl \
-        -display sdl,gl=on \
+      QEMU_ARGS=(
+        -enable-kvm
+        -device virtio-vga-gl
+        -display "sdl,gl=on"
+        -bios "$OVMF_BIN"
         -cpu host
+        -m 2G
+      )
+
+      if [[ "$FILE" == *.iso ]]; then
+        QEMU_ARGS+=(-cdrom "$FILE")
+      else
+        if [ ! -w "$FILE" ]; then
+          echo "Error: You do not have write permissions for '$FILE'."
+          exit 1
+        fi
+        QEMU_ARGS+=("-drive" "file=$FILE,format=raw,if=virtio")
+      fi
+
+      echo -e "Executing command: qemu-system-x86_64 ''${QEMU_ARGS[*]}\n"
+      exec qemu-system-x86_64 "''${QEMU_ARGS[@]}"
     '';
   };
 in {

@@ -72,14 +72,16 @@ in {
         "/var/cache/libvirt"
         "/var/db/sudo/"
         "/var/lib/bluetooth"
+        "/var/lib/libvirt"
+        "/var/lib/NetworkManager"
         "/var/lib/nixos"
+        "/var/lib/plasmalogin/wallpapers"
         "/var/lib/sops-nix"
         "/var/lib/systemd"
-        "/var/lib/NetworkManager"
-        "/var/lib/libvirt"
       ];
       files = [
         "/etc/machine-id"
+        "/etc/plasmalogin.conf"
       ];
     };
 

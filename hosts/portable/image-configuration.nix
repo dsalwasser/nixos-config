@@ -38,13 +38,6 @@ in {
     };
   };
 
-  # Ensure the user's home directory exists with correct ownership on first
-  # boot.
-  systemd.tmpfiles.rules = [
-    # Type Path           Mode  User   Group  Age   Argument
-    "d    /home/sali      0700  1000   100     -     -"
-  ];
-
   image.repart = {
     name = "portable-nixos-image";
 

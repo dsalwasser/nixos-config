@@ -1,5 +1,4 @@
 {
-  config,
   inputs,
   pkgs,
   ...
@@ -27,29 +26,13 @@
     # Use KDE Plasma as the desktop environment.
     kde-plasma = {
       enable = true;
-      autoLoginUser = "main";
+      autoLoginUser = "nixos";
     };
 
     # Use Home Manager to configure the users.
     home-manager = {
       enable = true;
-      users.main = ./home-configuration.nix;
-    };
-  };
-
-  sops = {
-    defaultSopsFile = ../../secrets/secrets.yaml;
-
-    # Store the key used for secret decryption in a persisted directory,
-    # otherwise the impermanence module would wipe it on reboot.
-    age.keyFile = "/persist/var/lib/sops-nix/keys.txt";
-
-    # Since sops-nix has to run after NixOS creates users, do not set an owner
-    # for these secrets and decrypt them to ´/run/secrets-for-users´ instead of
-    # ´/run/secrets´ before NixOS creates users.
-    secrets = {
-      root-password.neededForUsers = true;
-      sali-password.neededForUsers = true;
+      users.nixos = ./home-configuration.nix;
     };
   };
 
@@ -63,24 +46,19 @@
     users = {
       root = {
         isSystemUser = true;
-        hashedPasswordFile = config.sops.secrets.root-password.path;
+        initialHashedPassword = "";
       };
 
-      main = {
+      nixos = {
         isNormalUser = true;
-        password = "apple";
-        extraGroups = ["networkmanager" "fuse" "wheel"];
+        initialHashedPassword = "";
+        extraGroups = ["wheel" "networkmanager" "video"];
       };
     };
   };
 
   # Enable the fish shell so that it can be set as the default shell.
   programs.fish.enable = true;
-
-  programs.ssh = {
-    startAgent = true;
-    enableAskPassword = true;
-  };
 
   # Set the internationalization properties to German standards.
   i18n = {
@@ -106,6 +84,9 @@
 
   # Set the hostname of this device to `nomade`.
   networking.hostName = "nomade";
+
+  # Don't require sudo/root to `reboot` or `poweroff`.
+  security.polkit.enable = true;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "25.11";

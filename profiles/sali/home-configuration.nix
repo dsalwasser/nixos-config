@@ -51,6 +51,7 @@
     bitwarden-desktop
     easyeffects
     inkscape
+    kdePackages.kamoso
     mpv
     pympress
     signal-desktop

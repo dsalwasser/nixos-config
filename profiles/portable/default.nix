@@ -20,12 +20,12 @@
     users = {
       root = {
         isSystemUser = true;
-        initialPassword = "apple";
+        initialHashedPassword = "";
       };
 
       sali = {
         isNormalUser = true;
-        initialPassword = "apple";
+        initialHashedPassword = "";
         uid = 1000;
         extraGroups = ["wheel"];
 
@@ -33,6 +33,13 @@
       };
     };
   };
+
+  # Ensure the user's home directory exists with correct ownership on first
+  # boot.
+  systemd.tmpfiles.rules = [
+    # Type Path           Mode  User   Group  Age   Argument
+    "d    /home/sali      0700  1000   100     -     -"
+  ];
 
   # Enable the fish shell so that it can be set as the default shell.
   programs.fish.enable = true;

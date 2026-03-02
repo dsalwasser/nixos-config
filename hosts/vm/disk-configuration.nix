@@ -26,17 +26,10 @@
               content = {
                 type = "luks";
                 name = "enc";
-                extraOpenArgs = [
-                  "--allow-discards"
-                  "--perf-no_read_workqueue"
-                  "--perf-no_write_workqueue"
-                ];
                 settings = {
                   allowDiscards = true;
-                  crypttabExtraOpts = [
-                    "fido2-device=auto"
-                    "x-initrd.attach"
-                  ];
+                  bypassWorkqueues = true;
+                  crypttabExtraOpts = ["fido2-device=auto" "x-initrd.attach"];
                 };
                 content = {
                   type = "btrfs";

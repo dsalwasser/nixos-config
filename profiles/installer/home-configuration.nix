@@ -3,9 +3,6 @@
     # Use Alacritty as the terminal emulator.
     alacritty.enable = true;
 
-    # Use Zellij as the terminal multiplexer.
-    zellij.enable = true;
-
     # Use fish as the command line shell.
     fish.enable = true;
 
@@ -34,9 +31,6 @@
     # Command-line tools
     bottom
     restic
-
-    # Formatters
-    alejandra
 
     # Desktop applications
     bitwarden-desktop

@@ -1,6 +1,6 @@
 {inputs, ...}: {
   imports = [
-    inputs.self.nixosProfiles.portable
+    inputs.self.nixosProfiles.sali
     ./disk-configuration.nix
     ./hardware-configuration.nix
   ];

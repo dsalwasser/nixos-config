@@ -128,7 +128,11 @@
 
     # Use the systemd-boot EFI boot loader.
     loader = {
-      systemd-boot.enable = true;
+      systemd-boot = {
+        enable = true;
+        editor = false;
+      };
+      timeout = 0;
       efi.canTouchEfiVariables = true;
     };
   };

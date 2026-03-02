@@ -26,17 +26,10 @@
               content = {
                 type = "luks";
                 name = "enc";
-                extraOpenArgs = [
-                  "--allow-discards"
-                  "--perf-no_read_workqueue"
-                  "--perf-no_write_workqueue"
-                ];
                 settings = {
                   allowDiscards = true;
-                  crypttabExtraOpts = [
-                    "fido2-device=auto"
-                    "x-initrd.attach"
-                  ];
+                  bypassWorkqueues = true;
+                  crypttabExtraOpts = ["fido2-device=auto" "x-initrd.attach"];
                 };
                 content = {
                   type = "btrfs";
@@ -83,6 +76,6 @@
 
   # To make Hibernation work, we need to specify a resume offset obtained via
   # the following command:
-  # - btrfs inspect-internal map-swapfile -o /swap/swapfile
-  boot.kernelParams = ["resume=/dev/mapper/enc" "resume_offset=533760"];
+  # - btrfs inspect-internal map-swapfile -r /swap/swapfile
+  boot.kernelParams = ["hibernate.image_size=0" "resume=/dev/mapper/enc" "resume_offset=533760"];
 }
