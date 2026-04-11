@@ -17,15 +17,29 @@ in {
         description = "Rollback Btrfs root subvolume to a pristine state";
         wantedBy = ["initrd.target"];
 
-        # We want to make sure the rollback is done after the LUKS process.
-        after = ["systemd-cryptsetup@enc.service"];
+        # 1. systemd-cryptsetup@enc.service:
+        #    Ensures the encrypted device is unlocked and available as /dev/mapper/enc.
+        # 2. systemd-hibernate-resume.service:
+        #    Crucial to avoid a race condition. This service probes the device for
+        #    hibernation images. We must wait for it to finish and release the
+        #    device lock (EBUSY) before we can mount it for the rollback.
+        after = ["systemd-cryptsetup@enc.service" "systemd-hibernate-resume.service"];
 
-        # We want to rollback before mounting the system root during the early
-        # boot process
-        before = ["sysroot.mount"];
+        # 1. create-needed-for-boot-dirs.service:
+        #    NixOS creates directories for 'neededForBoot' filesystems here. We
+        #    must finish our rollback first, otherwise we might delete
+        #    directories this service just created.
+        # 2. local-fs-pre.target:
+        #    The standard systemd target that must be reached before any local
+        #    filesystems are mounted.
+        # 3. sysroot.mount:
+        #    The actual mounting of the (newly restored) root subvolume to /sysroot.
+        #    Our pristine state must be ready before this happens.
+        before = ["create-needed-for-boot-dirs.service" "local-fs-pre.target" "sysroot.mount"];
 
         unitConfig.DefaultDependencies = "no";
         serviceConfig.Type = "oneshot";
+
         script = ''
           # We first mount the Btrfs root to /mnt-btrfs-root so we can
           # manipulate Btrfs subvolumes.
@@ -61,23 +75,28 @@ in {
     };
 
     fileSystems = {
-      "/var/log".neededForBoot = true;
       "/persist".neededForBoot = true;
+      "/var/log".neededForBoot = true;
     };
 
     environment.persistence."/persist" = {
       hideMounts = true;
       directories = [
-        "/etc/NetworkManager/system-connections"
-        "/var/cache/libvirt"
-        "/var/db/sudo/"
-        "/var/lib/bluetooth"
-        "/var/lib/libvirt"
-        "/var/lib/NetworkManager"
         "/var/lib/nixos"
-        "/var/lib/plasmalogin/wallpapers"
         "/var/lib/sops-nix"
         "/var/lib/systemd"
+
+        "/etc/NetworkManager/system-connections"
+        "/var/lib/NetworkManager"
+        "/var/lib/bluetooth"
+        "/var/lib/chrony"
+        "/var/lib/cups"
+        "/var/lib/upower"
+        "/var/lib/libvirt"
+        "/var/cache/libvirt"
+
+        "/var/lib/plasmalogin/wallpapers"
+        "/var/lib/AccountsService/icons"
       ];
       files = [
         "/etc/machine-id"

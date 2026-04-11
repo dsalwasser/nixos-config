@@ -26,8 +26,9 @@
       makeDefaultBrowser = true;
     };
 
-    # Configure KDE Plasma as well as Ipe and VSCode.
+    # Configure KDE Plasma, Ipe, and VSCode.
     kde-plasma.enable = true;
+    obs-studio.enable = true;
     ipe.enable = true;
     vscode.enable = true;
   };
@@ -35,19 +36,21 @@
   home.packages = with pkgs; [
     # Command-line tools
     bottom
+    nvtopPackages.full
     quickemu
     restic
+    tex
 
     # Formatters and language servers
     alejandra
     bash-language-server
     clang-tools
-    cmake-language-server
-    marksman
+    neocmakelsp
     nil
     texlab
 
     # Desktop applications
+    antigravity
     bitwarden-desktop
     easyeffects
     inkscape
@@ -57,6 +60,7 @@
     signal-desktop
     thunderbird
     tor-browser
+    trilium-desktop
     yubioath-flutter
 
     # Fonts

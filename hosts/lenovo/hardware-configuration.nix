@@ -1,32 +1,18 @@
 {
   config,
-  pkgs,
   lib,
   ...
 }: {
-  nixpkgs.config.allowUnfreePredicate = pkg:
-    builtins.elem (lib.getName pkg) [
-      "nvidia-x11"
-      "nvidia-settings"
-    ];
-
-  # Enable iOS backup and filesystem support.
-  services.usbmuxd.enable = true;
-  environment.systemPackages = [pkgs.libimobiledevice];
-
   services = {
-    # Set Power Profiles Deamon as the power management tool.
-    power-profiles-daemon.enable = true;
-
     # Enable periodic SSD TRIM of mounted partitions in background.
     fstrim.enable = true;
 
-    # Load video drivers for Xorg and Wayland.
-    xserver.videoDrivers = ["amdgpu" "nvidia" "modesetting"];
+    # Load video drivers for Wayland.
+    xserver.videoDrivers = ["amdgpu" "nvidia"];
   };
 
   hardware = {
-    # Update the CPU microcode for AMD processors.
+    # Update the CPU microcode for the processor.
     cpu.amd.updateMicrocode = true;
 
     # Enable all the firmware that is redistributable.
@@ -35,17 +21,19 @@
     # Enable OpenGL and accelerated video playback.
     graphics = {
       enable = true;
-      extraPackages = [pkgs.libva-vdpau-driver pkgs.nvidia-vaapi-driver];
+      enable32Bit = true;
     };
 
     nvidia = {
-      # Install the stable (production) Nvidia drivers.
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      # Install the latest Nvidia drivers.
+      package = config.boot.kernelPackages.nvidiaPackages.beta;
 
-      modesetting.enable = true;
-
-      # Use the open source NVIDIA kernel module.
+      # Use the open source Nvidia kernel module.
       open = true;
+
+      # Enable Nvidia DRM kernel modesetting so Wayland/KWin can initialize the
+      # GPU correctly (needed for PRIME/offload setups and to reduce stutter).
+      modesetting.enable = true;
 
       # Enable power management through systemd.
       powerManagement = {
@@ -71,6 +59,10 @@
     };
   };
 
+  # Make sure KWin uses the Nvidia graphics for rendering. This is currently
+  # necessary to avoid performance issues and occasional stutters.
+  environment.variables.KWIN_DRM_DEVICES = "/dev/dri/card0:/dev/dri/card1";
+
   # Add a specialization that disables the Nvidia GPU.
   specialisation.disable-nvidia-dgpu.configuration = {
     boot.extraModprobeConfig = ''
@@ -81,23 +73,34 @@
     services.udev.extraRules = ''
       # Remove NVIDIA USB xHCI Host Controller devices, if present
       ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0c0330", ATTR{power/control}="auto", ATTR{remove}="1"
+
       # Remove NVIDIA USB Type-C UCSI devices, if present
       ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0c8000", ATTR{power/control}="auto", ATTR{remove}="1"
+
       # Remove NVIDIA Audio devices, if present
       ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x040300", ATTR{power/control}="auto", ATTR{remove}="1"
+
       # Remove NVIDIA VGA/3D controller devices
       ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]*", ATTR{power/control}="auto", ATTR{remove}="1"
     '';
 
     boot.blacklistedKernelModules = ["nouveau" "nvidia" "nvidia_drm" "nvidia_modeset"];
+
+    hardware.nvidia = {
+      powerManagement = {
+        enable = lib.mkForce false;
+        finegrained = lib.mkForce false;
+      };
+
+      prime.offload = {
+        enable = lib.mkForce false;
+        enableOffloadCmd = lib.mkForce false;
+      };
+    };
   };
 
   boot = {
-    # Use the latest Linux kernel.
-    kernelPackages = pkgs.linuxPackages_latest;
-
-    # Enables the AMD CPU scaling and hardware framebuffer support, which is
-    # required to somewhat consistently resume from suspend-to-ram.
+    # Enables AMD CPU scaling and Nvidia hardware framebuffer support.
     kernelParams = ["amd_pstate=active" "nvidia_drm.fbdev=1"];
 
     kernelModules = ["amdgpu" "nvidia" "kvm-amd"];
@@ -128,12 +131,12 @@
 
     # Use the systemd-boot EFI boot loader.
     loader = {
+      efi.canTouchEfiVariables = true;
+      timeout = 0;
       systemd-boot = {
         enable = true;
         editor = false;
       };
-      timeout = 0;
-      efi.canTouchEfiVariables = true;
     };
   };
 

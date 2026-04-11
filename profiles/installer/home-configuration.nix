@@ -24,7 +24,7 @@
 
     # Configure KDE Plasma and VSCode.
     kde-plasma.enable = true;
-    vscode.enable = true;
+    vscode.enable = false;
   };
 
   home.packages = with pkgs; [

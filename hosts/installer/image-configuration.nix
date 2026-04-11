@@ -8,4 +8,7 @@
     makeUsbBootable = true;
     squashfsCompression = "zstd -Xcompression-level 3";
   };
+
+  # Add Memtest86+ to the CD.
+  boot.loader.grub.memtest86.enable = true;
 }

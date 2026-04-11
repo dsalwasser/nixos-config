@@ -20,13 +20,13 @@
     users = {
       root = {
         isSystemUser = true;
-        initialHashedPassword = "";
+        password = "correcthorsebatterystaple";
       };
 
       sali = {
         isNormalUser = true;
-        initialHashedPassword = "";
         uid = 1000;
+        password = "correcthorsebatterystaple";
         extraGroups = ["wheel"];
 
         packages = with pkgs; [alacritty helix trilium-desktop];

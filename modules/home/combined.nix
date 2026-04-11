@@ -10,6 +10,7 @@
     ./helix.nix
     ./ipe.nix
     ./kde-plasma.nix
+    ./obs-studio.nix
     ./vscode.nix
     ./zellij.nix
   ];

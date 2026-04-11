@@ -10,8 +10,8 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    # Disable networking functionality
     networking = {
-      # Disable networking functionality
       networkmanager.enable = lib.mkForce false;
       wireless.enable = lib.mkForce false;
       useDHCP = lib.mkForce false;

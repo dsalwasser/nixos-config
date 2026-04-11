@@ -13,9 +13,14 @@ in {
   config = lib.mkIf cfg.enable {
     programs.chromium = {
       enable = true;
+      package = pkgs.ungoogled-chromium;
 
       commandLineArgs = [
+        "--disable-top-sites"
         "--disable-features=ExtensionManifestV2Unsupported,ExtensionManifestV2Disabled"
+        "--fingerprinting-canvas-image-data-noise"
+        "--fingerprinting-canvas-measuretext-noise"
+        "--fingerprinting-client-rects-noise"
       ];
 
       extensions = [

@@ -18,9 +18,6 @@ in {
         enable = true;
         support32Bit = true;
       };
-
-      # Enable PulseAudio server emulation.
-      pulse.enable = true;
     };
 
     # Enable the RealtimeKit system service. The PipeWire and PulseAudio server

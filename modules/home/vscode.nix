@@ -13,11 +13,12 @@ in {
   config = lib.mkIf cfg.enable {
     programs.vscode = {
       enable = true;
-      package = pkgs.vscodium;
+      mutableExtensionsDir = false;
 
       profiles.default = {
         enableUpdateCheck = false;
         enableExtensionUpdateCheck = false;
+        enableMcpIntegration = false;
 
         extensions = with pkgs.vscode-extensions; [
           # German Language Pack
@@ -30,20 +31,11 @@ in {
           streetsidesoftware.code-spell-checker
           streetsidesoftware.code-spell-checker-german
 
-          # Formatter
-          esbenp.prettier-vscode
-
-          # Support for TOML, Markdown and LaTex
-          tamasfe.even-better-toml
-          yzhang.markdown-all-in-one
-          james-yu.latex-workshop
-
-          # Language support for Nix, Bash, R, and Java
-          jnoortheen.nix-ide
+          # Language support for Bash, Latex, Nix, TOML
           mads-hartmann.bash-ide-vscode
-          reditorsupport.r
-          reditorsupport.r-syntax
-          vscjava.vscode-java-pack
+          james-yu.latex-workshop
+          jnoortheen.nix-ide
+          tamasfe.even-better-toml
 
           # Language support for C/C++ and CMake
           llvm-vs-code-extensions.vscode-clangd
@@ -52,24 +44,24 @@ in {
           # Language support for Python
           ms-python.python
           charliermarsh.ruff
-          njpwerner.autodocstring
 
-          # Language support for Java
-          redhat.java
-          vscjava.vscode-java-debug
-          vscjava.vscode-java-test
-          vscjava.vscode-maven
-          vscjava.vscode-gradle
-          vscjava.vscode-java-dependency
+          # Language support for web development
+          esbenp.prettier-vscode
 
           # GitHub Copilot
           github.copilot-chat
         ];
 
         keybindings = [
-          # Shortcut to open a new terminal inside the current directory
+          # Shortcut to open a new terminal in the workspace root directory
           {
             key = "ctrl+t";
+            command = "workbench.action.terminal.newWithCwd";
+            args.cwd = "\${workspaceFolder}";
+          }
+          # Shortcut to open a new terminal inside the current directory
+          {
+            key = "ctrl+shift+t";
             command = "workbench.action.terminal.newWithCwd";
             args.cwd = "\${fileDirname}";
           }
@@ -83,11 +75,11 @@ in {
         userSettings = {
           "editor.fontFamily" = "SF Mono";
           "editor.fontSize" = 13;
-          "window.zoomLevel" = 0.8;
-
           "editor.formatOnSave" = true;
 
+          "extensions.autoUpdate" = false;
           "extensions.ignoreRecommendations" = true;
+
           "explorer.autoReveal" = false;
           "update.showReleaseNotes" = false;
           "workbench.startupEditor" = "none";
@@ -95,7 +87,21 @@ in {
           "telemetry.telemetryLevel" = "off";
           "chat.disableAIFeatures" = false;
 
+          "editor.inlineSuggest.enabled" = false;
+          "github.copilot.enable" = {
+            "*" = false;
+            "plaintext" = false;
+            "markdown" = false;
+            "scminput" = false;
+          };
+
           "cSpell.language" = "en,de-de";
+          "cSpell.enabledFileTypes" = {
+            "*" = false;
+            "latex" = true;
+            "markdown" = true;
+            "plaintext" = true;
+          };
 
           "latex-workshop.formatting.latex" = "latexindent";
           "latex-workshop.formatting.latexindent.args" = [
@@ -133,24 +139,8 @@ in {
             "editor.defaultFormatter" = "charliermarsh.ruff";
           };
 
-          "java.jdt.ls.java.home" = "${pkgs.jdk21}";
-          "java.imports.gradle.wrapper.checksums" = [
-            {
-              "sha256" = "7d3a4ac4de1c32b59bc6a4eb8ecb8e612ccd0cf1ae1e99f66902da64df296172";
-              "allowed" = true;
-            }
-          ];
-
           "[json]" = {
             "editor.defaultFormatter" = "vscode.json-language-features";
-          };
-
-          "editor.inlineSuggest.enabled" = false;
-          "github.copilot.enable" = {
-            "*" = false;
-            "plaintext" = false;
-            "markdown" = false;
-            "scminput" = false;
           };
         };
       };
@@ -159,18 +149,18 @@ in {
     # Add a context menu entry for Dolphin to open VS Code.
     home.file.".local/share/kio/servicemenus/open-with-vscode.desktop".text = ''
       [Desktop Entry]
-      Name=Open in VSCodium
-      Name[de]=In VSCodium öffnen
+      Name=Open in VSCode
+      Name[de]=In VSCode öffnen
       Type=Service
-      Actions=openInVSCodium
+      Actions=openInVSCode
       MimeType=all/all
       X-KDE-Priority=TopLevel
 
-      [Desktop Action openInVSCodium]
-      Name=Open in VSCodium
-      Name[de]=In VSCodium öffnen
-      Icon=vscodium
-      Exec=codium %f
+      [Desktop Action openInVSCode]
+      Name=Open in VSCode
+      Name[de]=In VSCode öffnen
+      Icon=vscode
+      Exec=code %f
     '';
   };
 }

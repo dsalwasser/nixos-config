@@ -61,8 +61,6 @@ in {
           Overview = "Meta+Tab";
           ExposeAll = "Meta+CapsLock";
         };
-
-        "services/vicinae.desktop"."open" = "Meta+Space";
       };
 
       panels = [
@@ -103,53 +101,5 @@ in {
         };
       };
     };
-
-    # Alternative desktop launcher to KRunner.
-    programs.vicinae = {
-      enable = true;
-      systemd.enable = true;
-
-      settings = {
-        theme = {
-          dark.name = "vicinae-dark";
-        };
-        launcher_window = {
-          opacity = 0.98;
-          client_side_decorations.enabled = true;
-        };
-        close_on_focus_loss = true;
-        providers = {
-          browser-extension.enabled = false;
-          core.entrypoints = {
-            documentation.enabled = false;
-            keybind-settings.enabled = false;
-            list-extensions.enabled = false;
-            manage-fallback.enabled = false;
-            oauth-token-store.enabled = false;
-            open-config-file.enabled = false;
-            open-default-config.enabled = false;
-            reload-scripts.enabled = false;
-            refresh-apps.enabled = false;
-            report-bug.enabled = false;
-            sponsor.enabled = false;
-            store.enabled = false;
-          };
-          files.preferences.autoIndexing = false;
-          developer.enabled = false;
-          font.enabled = false;
-          manage-shortcuts.enabled = false;
-          power.entrypoints = {
-            sleep.enabled = false;
-            soft-reboot.enabled = false;
-          };
-          raycast-compat.enabled = false;
-          theme.enabled = false;
-          wm.enabled = false;
-        };
-      };
-    };
-
-    # Enable Ozone Wayland support in Chromium and Electron based applications.
-    home.sessionVariables.NIXOS_OZONE_WL = 1;
   };
 }

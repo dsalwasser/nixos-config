@@ -34,6 +34,9 @@
                 content = {
                   type = "btrfs";
                   extraArgs = ["-L" "nixos" "-f"];
+                  # We create an empty snapshot on creation that serves as a
+                  # baseline for the impermanence module, allowing it to reset
+                  # the filesystem contents on each reboot.
                   postCreateHook = ''
                     mount -t btrfs /dev/mapper/enc /mnt
                     btrfs subvolume snapshot -r /mnt/root /mnt/root-blank
@@ -74,8 +77,22 @@
     };
   };
 
-  # To make Hibernation work, we need to specify a resume offset obtained via
-  # the following command:
-  # - btrfs inspect-internal map-swapfile -r /swap/swapfile
-  boot.kernelParams = ["hibernate.image_size=0" "resume=/dev/mapper/enc" "resume_offset=533760"];
+  boot = {
+    kernelParams = [
+      # To make Hibernation work, we need to specify a resume offset obtained
+      # via the following command:
+      # - btrfs inspect-internal map-swapfile -r /swap/swapfile
+      "hibernate.image_size=0"
+      "resume=/dev/mapper/enc"
+      "resume_offset=533760"
+
+      # Enable zswap and use lz4 as the compression algorithm.
+      "zswap.enabled=1"
+      "zswap.compressor=lz4"
+      "zswap.shrinker_enabled=1"
+    ];
+
+    # Make sure lz4 is available as otherwise zswap falls back to zstd.
+    initrd.kernelModules = ["lz4"];
+  };
 }

@@ -10,6 +10,7 @@
   helix = import ./helix.nix;
   ipe = import ./ipe.nix;
   kde-plasma = import ./kde-plasma.nix;
+  obs-studio = import ./obs-studio.nix;
   vscode = import ./vscode.nix;
   zellij = import ./zellij.nix;
 }

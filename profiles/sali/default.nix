@@ -1,15 +1,53 @@
 {
   config,
   inputs,
+  lib,
   pkgs,
   ...
 }: {
-  # Make the additional packages and package modifications from this flake
-  # available.
-  nixpkgs.overlays = [
-    inputs.self.overlays.additions
-    inputs.self.overlays.modifications
-  ];
+  nix.settings = {
+    substituters = ["https://cache.nixos-cuda.org"];
+    trusted-public-keys = ["cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="];
+  };
+
+  nixpkgs = {
+    config.allowUnfreePredicate = pkg:
+      builtins.elem (lib.getName pkg) [
+        "cuda-merged"
+        "cuda_cuobjdump"
+        "cuda_gdb"
+        "cuda_nvcc"
+        "cuda_nvdisasm"
+        "cuda_nvprune"
+        "cuda_cccl"
+        "cuda_cudart"
+        "cuda_cupti"
+        "cuda_cuxxfilt"
+        "cuda_nvml_dev"
+        "cuda_nvrtc"
+        "cuda_nvtx"
+        "cuda_profiler_api"
+        "cuda_sanitizer_api"
+        "libcublas"
+        "libcufft"
+        "libcurand"
+        "libcusolver"
+        "libcusparse"
+        "libnpp"
+        "libnvjitlink"
+
+        "nvidia-x11"
+        "nvidia-settings"
+
+        "antigravity"
+        "vscode"
+      ];
+
+    overlays = [
+      inputs.self.overlays.additions
+      inputs.self.overlays.modifications
+    ];
+  };
 
   components = {
     # Use modern Nix settings.
@@ -23,6 +61,9 @@
 
     # Enable the Bluetooth subsystem component.
     bluetooth.enable = true;
+
+    # Enable chrony for time synchronization.
+    chrony.enable = true;
 
     # Enable the networking subsystem component.
     networking.enable = true;
@@ -72,13 +113,14 @@
     users = {
       root = {
         isSystemUser = true;
-        hashedPasswordFile = config.sops.secrets.root-password.path;
+        # Lock the root user account.
+        hashedPassword = "!";
       };
 
       sali = {
         isNormalUser = true;
         hashedPasswordFile = config.sops.secrets.sali-password.path;
-        extraGroups = ["audio" "networkmanager" "fuse" "podman" "kvm" "libvirtd" "wheel"];
+        extraGroups = ["wheel" "fuse" "networkmanager" "kvm" "libvirtd" "podman"];
       };
     };
   };
@@ -90,6 +132,9 @@
     startAgent = true;
     enableAskPassword = true;
   };
+
+  # Enable feedback when typing sudo passwords.
+  security.sudo.extraConfig = "Defaults pwfeedback";
 
   # Set the internationalization properties to German standards.
   i18n = {

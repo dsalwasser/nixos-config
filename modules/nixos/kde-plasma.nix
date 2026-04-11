@@ -11,14 +11,16 @@ in {
     autoLoginUser = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
       default = null;
-      example = "sali";
       description = "Username to log in automatically to KDE Plasma. Set to null to disable autologin.";
     };
   };
 
   config = lib.mkIf cfg.enable {
     services = {
-      desktopManager.plasma6.enable = true;
+      desktopManager.plasma6 = {
+        enable = true;
+        enableQt5Integration = false;
+      };
 
       displayManager = {
         plasma-login-manager.enable = true;
@@ -27,6 +29,16 @@ in {
           user = cfg.autoLoginUser;
         };
       };
+    };
+
+    xdg.portal = {
+      config.common.default = "kde";
+      xdgOpenUsePortal = true;
+    };
+
+    programs = {
+      kdeconnect.enable = true;
+      partition-manager.enable = true;
     };
 
     environment = {

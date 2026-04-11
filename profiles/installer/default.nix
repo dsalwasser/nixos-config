@@ -1,10 +1,13 @@
 {
   inputs,
+  modulesPath,
   pkgs,
   ...
 }: {
-  # Make the additional packages and package modifications from this flake
-  # available.
+  imports = [
+    "${toString modulesPath}/profiles/base.nix"
+  ];
+
   nixpkgs.overlays = [
     inputs.self.overlays.additions
     inputs.self.overlays.modifications
@@ -46,19 +49,29 @@
     users = {
       root = {
         isSystemUser = true;
-        initialHashedPassword = "";
+        # Lock the root user account.
+        hashedPassword = "!";
       };
 
       nixos = {
         isNormalUser = true;
+        # This user does not require a password.
         initialHashedPassword = "";
-        extraGroups = ["wheel" "networkmanager" "video"];
+        extraGroups = ["wheel" "networkmanager"];
       };
     };
   };
 
   # Enable the fish shell so that it can be set as the default shell.
   programs.fish.enable = true;
+
+  security = {
+    # Don't require sudo/root to `reboot` or `poweroff`.
+    polkit.enable = true;
+
+    # Enable feedback when typing sudo passwords.
+    sudo.extraConfig = "Defaults pwfeedback";
+  };
 
   # Set the internationalization properties to German standards.
   i18n = {
@@ -82,11 +95,8 @@
   # Set the default timezone to the German time.
   time.timeZone = "Europe/Berlin";
 
-  # Set the hostname of this device to `nomade`.
-  networking.hostName = "nomade";
-
-  # Don't require sudo/root to `reboot` or `poweroff`.
-  security.polkit.enable = true;
+  # Set the hostname of this device to `installer`.
+  networking.hostName = "installer";
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "25.11";

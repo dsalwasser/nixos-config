@@ -34,6 +34,9 @@
                 content = {
                   type = "btrfs";
                   extraArgs = ["-L" "nixos" "-f"];
+                  # We create an empty snapshot on creation that serves as a
+                  # baseline for the impermanence module, allowing it to reset
+                  # the filesystem contents on each reboot.
                   postCreateHook = ''
                     mount -t btrfs /dev/mapper/enc /mnt
                     btrfs subvolume snapshot -r /mnt/root /mnt/root-blank

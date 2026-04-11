@@ -6,10 +6,13 @@
     # Use the latest Linux kernel.
     kernelPackages = pkgs.linuxPackages_latest;
 
+    # Enable systemd in initrd.
+    initrd.systemd.enable = true;
+
     # Use the systemd-boot EFI boot loader.
     loader = {
-      systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
+      systemd-boot.enable = true;
     };
   };
 

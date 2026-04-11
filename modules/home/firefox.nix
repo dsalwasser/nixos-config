@@ -22,11 +22,15 @@ in {
       MOZ_USE_XINPUT2 = 1;
     };
 
-    xdg.mimeApps.defaultApplications = lib.mkIf cfg.makeDefault {
-      "text/html" = ["firefox.desktop"];
-      "text/xml" = ["firefox.desktop"];
-      "x-scheme-handler/http" = ["firefox.desktop"];
-      "x-scheme-handler/https" = ["firefox.desktop"];
+    xdg.mimeApps = lib.mkIf cfg.makeDefaultBrowser {
+      enable = true;
+      defaultApplications = {
+        "application/pdf" = "firefox.desktop";
+        "text/html" = "firefox.desktop";
+        "text/xml" = "firefox.desktop";
+        "x-scheme-handler/http" = "firefox.desktop";
+        "x-scheme-handler/https" = "firefox.desktop";
+      };
     };
 
     programs.firefox = {
