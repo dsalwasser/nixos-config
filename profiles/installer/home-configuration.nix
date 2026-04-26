@@ -34,8 +34,11 @@
 
     # Desktop applications
     bitwarden-desktop
-    tor-browser
     yubioath-flutter
+
+    # Fonts
+    sf-mono
+    sf-pro
   ];
 
   # Setup the fonts used by the system.
@@ -43,9 +46,9 @@
     enable = true;
 
     defaultFonts = {
-      serif = ["Noto Sans"];
-      sansSerif = ["Noto Sans"];
-      monospace = ["Noto Mono"];
+      serif = ["SF Pro Text"];
+      sansSerif = ["SF Pro Text"];
+      monospace = ["SF Mono"];
       emoji = ["Noto Color Emoji"];
     };
 

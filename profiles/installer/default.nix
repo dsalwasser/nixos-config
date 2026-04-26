@@ -55,8 +55,7 @@
 
       nixos = {
         isNormalUser = true;
-        # This user does not require a password.
-        initialHashedPassword = "";
+        password = "doit";
         extraGroups = ["wheel" "networkmanager"];
       };
     };

@@ -36,8 +36,8 @@ in {
     programs.firefox = {
       enable = true;
 
+      configPath = "${config.xdg.configHome}/mozilla/firefox";
       languagePacks = ["de" "en"];
-
       nativeMessagingHosts = [pkgs.kdePackages.plasma-browser-integration];
 
       policies = {
