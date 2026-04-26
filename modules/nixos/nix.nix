@@ -33,13 +33,6 @@ in {
         # Enable Nix flakes and the new 'nix' command.
         experimental-features = "nix-command flakes";
 
-        # Increase the parallel TCP connections used to fetch files.
-        http-connections = 64;
-
-        # Increase the maximum number of substitution jobs that Nix will try to
-        # run in parallel.
-        max-substitution-jobs = 64;
-
         # Workaround for https://github.com/NixOS/nix/issues/9574.
         nix-path = config.nix.nixPath;
 

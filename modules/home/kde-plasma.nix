@@ -78,7 +78,7 @@ in {
                   "applications:org.kde.dolphin.desktop"
                   "applications:firefox.desktop"
                   "applications:Alacritty.desktop"
-                  "applications:codium.desktop"
+                  "applications:code.desktop"
                 ];
               };
             }

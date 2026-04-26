@@ -24,13 +24,17 @@
 
     # Configure KDE Plasma and VSCode.
     kde-plasma.enable = true;
-    vscode.enable = false;
+    vscode.enable = true;
   };
 
   home.packages = with pkgs; [
     # Command-line tools
     bottom
     restic
+
+    # Formatters and language servers for Nix
+    alejandra
+    nil
 
     # Desktop applications
     bitwarden-desktop
