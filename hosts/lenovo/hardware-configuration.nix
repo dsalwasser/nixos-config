@@ -57,6 +57,8 @@
         };
       };
     };
+
+    nvidia-container-toolkit.enable = true;
   };
 
   # Make sure KWin uses the Nvidia graphics for rendering. This is currently
@@ -65,6 +67,8 @@
 
   # Add a specialization that disables the Nvidia GPU.
   specialisation.disable-nvidia-dgpu.configuration = {
+    environment.etc."specialisation".text = "disable-nvidia-dgpu";
+
     boot.extraModprobeConfig = ''
       blacklist nouveau
       options nouveau modeset=0
@@ -86,16 +90,20 @@
 
     boot.blacklistedKernelModules = ["nouveau" "nvidia" "nvidia_drm" "nvidia_modeset"];
 
-    hardware.nvidia = {
-      powerManagement = {
-        enable = lib.mkForce false;
-        finegrained = lib.mkForce false;
+    hardware = {
+      nvidia = {
+        powerManagement = {
+          enable = lib.mkForce false;
+          finegrained = lib.mkForce false;
+        };
+
+        prime.offload = {
+          enable = lib.mkForce false;
+          enableOffloadCmd = lib.mkForce false;
+        };
       };
 
-      prime.offload = {
-        enable = lib.mkForce false;
-        enableOffloadCmd = lib.mkForce false;
-      };
+      nvidia-container-toolkit.enable = lib.mkForce false;
     };
   };
 

@@ -36,6 +36,7 @@
   home.packages = with pkgs; [
     # Command-line tools
     bottom
+    distrobox
     nvtopPackages.full
     quickemu
     restic
@@ -45,8 +46,10 @@
     alejandra
     bash-language-server
     clang-tools
+    gersemi
     neocmakelsp
     nil
+    pre-commit
     texlab
 
     # Desktop applications
@@ -55,6 +58,7 @@
     easyeffects
     inkscape
     kdePackages.kamoso
+    kontainer
     mpv
     pympress
     signal-desktop

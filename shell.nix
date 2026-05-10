@@ -9,7 +9,6 @@ pkgs.mkShell {
     disko
     git
     helix
-    nixos-facter
     sbctl
     sops
   ];

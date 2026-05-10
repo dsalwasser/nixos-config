@@ -49,6 +49,16 @@ in {
       spiceUSBRedirection.enable = true;
     };
 
+    # Override the service settings to prevent systemd from requiring
+    # credentials. This bypasses encryption issues often caused by TPM state
+    # changes under Secure Boot.
+    systemd.services.libvirtd = {
+      serviceConfig = {
+        LoadCredential = "";
+        LoadCredentialEncrypted = "";
+      };
+    };
+
     # Register ARM64 binary format and allow the use of it inside containers.
     boot.binfmt = lib.mkIf cfg.enableArm64 {
       emulatedSystems = ["aarch64-linux"];

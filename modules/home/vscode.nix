@@ -74,7 +74,7 @@ in {
 
         userSettings = {
           "editor.fontFamily" = "SF Mono";
-          "editor.fontSize" = 13;
+          "editor.fontSize" = 14;
           "editor.formatOnSave" = true;
 
           "extensions.autoUpdate" = false;

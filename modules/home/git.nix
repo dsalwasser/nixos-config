@@ -21,7 +21,7 @@ in {
       };
 
       signing = {
-        key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGzE9O1OSxK/2qYqfSePD49L5HEjiN0nd5s18qNct28o daniel.salwasser@outlook.com";
+        key = "${config.home.homeDirectory}/.ssh/id_ed25519_sk_yubikey1.pub";
         format = "ssh";
         signByDefault = true;
         signer = "${pkgs.openssh}/bin/ssh-keygen";
